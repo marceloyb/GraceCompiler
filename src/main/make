@@ -1,0 +1,6 @@
+name=$1
+
+javacc $name.jj
+javac *.java
+java $name
+
