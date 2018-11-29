@@ -1,16 +1,21 @@
 options{
   LOOKAHEAD=6;
+  UNICODE_INPUT=true;
 }
 
 PARSER_BEGIN(GraceCompiler)
+import java.io.*;
 
-/** Simple brace matcher. */
-public class GraceCompiler {
+public class GraceCompiler{
 
-  /** Main entry point. */
-  public static void main(String args[]) throws ParseException {
-    GraceCompiler parser = new GraceCompiler(System.in);
-    parser.parseOneLine();
+  public static void main(String args[]){
+    try{
+        GraceCompiler parser = new GraceCompiler(new java.io.FileInputStream(args[0]));
+        parser.startParsing();
+
+    } catch (Throwable error){
+        System.out.println("Syntax Error\n" + error.getMessage());
+    }
   }
 
 }
@@ -74,7 +79,6 @@ TOKEN :
   |<_COND: "?">
   |<_COLON: ":">
 
-
   // cmds
 
   | <_IF: "if">
@@ -90,11 +94,19 @@ TOKEN :
 
 }
 
-void parseOneLine():
+void startParsing():
 {
   double a;
 }
 {
-  <_ASSIGN>
+  <_ASSIGN> <_CHAR>
   {System.out.println("reconhecendo os tokens");}
+}
+
+// Variable declaration rule
+void VAR():
+{
+    List<Var> varList;
+}
+{
 }

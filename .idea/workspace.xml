@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6d1ac2c5-f459-4a80-9fcb-d4d1e37f20f7" name="Default Changelist" comment="" />
+    <list default="true" id="6d1ac2c5-f459-4a80-9fcb-d4d1e37f20f7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/GraceCompiler.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/GraceCompiler.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/GraceCompiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/GraceCompiler.jj" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompiler.jj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/GraceCompilerTokenManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompilerTokenManager.java" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -9,17 +15,20 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.jj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-651">
-              <caret line="1" column="14" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
+            <state relative-caret-position="455">
+              <caret line="108" column="21" selection-start-line="108" selection-start-column="21" selection-end-line="108" selection-end-column="21" />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -29,23 +38,36 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="1376" />
-    <option name="y" value="47" />
-    <option name="width" value="1346" />
-    <option name="height" value="675" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="y" value="23" />
+    <option name="width" value="1366" />
+    <option name="height" value="719" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="GraceCompiler" type="b2602c69:ProjectViewProjectNode" />
               <item name="GraceCompiler" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="GraceCompiler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="GraceCompiler" type="462c0819:PsiDirectoryNode" />
+              <item name=".idea" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="GraceCompiler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="GraceCompiler" type="462c0819:PsiDirectoryNode" />
+              <item name=".idea" type="462c0819:PsiDirectoryNode" />
+              <item name="libraries" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="GraceCompiler" type="b2602c69:ProjectViewProjectNode" />
@@ -66,20 +88,18 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543198875846" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543529419158" />
     <property name="last_opened_file_path" value="$USER_HOME$/Downloads/javacc.jar!/" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Project" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.last.edited" value="Global Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="settings.github" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -109,18 +129,22 @@
       <option name="presentableId" value="Default" />
       <updated>1543197605856</updated>
       <workItem from="1543197608570" duration="133000" />
-      <workItem from="1543197761280" duration="1010000" />
+      <workItem from="1543197761280" duration="1319000" />
+      <workItem from="1543267098867" duration="3014000" />
+      <workItem from="1543319224111" duration="420000" />
+      <workItem from="1543319674585" duration="2794000" />
+      <workItem from="1543528726377" duration="469000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1143000" />
+    <option name="totallyTimeSpent" value="8225000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1376" y="47" width="1346" height="675" extended-state="0" />
+    <frame x="0" y="23" width="1366" height="719" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25384617" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2659091" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -156,8 +180,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.jj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-651">
-          <caret line="1" column="14" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
+        <state relative-caret-position="455">
+          <caret line="108" column="21" selection-start-line="108" selection-start-column="21" selection-end-line="108" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -190,6 +214,7 @@
       </state>
       <state key="GlobalLibrariesConfigurable.UI">
         <settings>
+          <last-edited>javacc</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
