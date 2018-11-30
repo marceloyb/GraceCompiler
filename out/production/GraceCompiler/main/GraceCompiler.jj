@@ -4,8 +4,6 @@ options{
 }
 
 PARSER_BEGIN(GraceCompiler)
-
-package main;
 import java.io.*;
 import semantic.*;
 
