@@ -7,7 +7,7 @@ PARSER_BEGIN(GraceCompiler)
 
 package main;
 import java.io.*;
-import semantic.*;
+import main.semantic.*;
 
 public class GraceCompiler{
 
@@ -40,7 +40,7 @@ TOKEN :
 
    <_DEF: "def">
   |<_VAR: "var">
-  |<_TYPE: "int" | "bool" | "string">
+  |<_TYPE: "int" | "bool" | "string" | "void">
 
   // primitives
 
@@ -103,17 +103,19 @@ void startParsing():
 }
 {
   VAR()
-  {System.out.println("reconhecendo os tokens");}
 }
 
 // Variable declaration rule
 void VAR():
 {
-    Var var;
+    Var var = new Var();
+    Token typeToken;
 }
 {
-    <_VAR> <_CHAR> (<_CHAR> | <_INT>)* <_ASSIGN> (<_INT> | <_CHAR>) <_COLON> var.type = <_TYPE> <_SEMICOLON>
+    <_VAR> <_CHAR> (<_CHAR> | <_INT>)* <_ASSIGN> (<_INT> | <_CHAR>) <_COLON> typeToken = <_TYPE> <_SEMICOLON>
     {
-        return System.out.println(var.Type);
+        Type type = Type.valueOf(typeToken.toString().toUpperCase());
+        General.updateVar(var, type);
+        System.out.println(var.getType().toString());
     }
 }

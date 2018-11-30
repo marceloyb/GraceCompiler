@@ -6,10 +6,10 @@ import java.util.List;
 
 public class Var{
 
-    private Type type = Type._void;
+    public Type type = Type.VOID;
     private boolean composed = false;
     private Content content = null;
-    // var can be a array of vars
+    // var can be a array of vars, fazer adaptaçao
     private List<Content> contentOfVars = new ArrayList<>();
 
 
@@ -18,13 +18,14 @@ public class Var{
     }
 
     public void setType(Type type) {
-        if (contentOfVars != null){
-            for (Content c: contentOfVars){
-                if (c != null && c.getType() != type){
-                    c.setType(type);
-                }
-            }
-        }
+//        if (contentOfVars != null){
+//            for (Content c: contentOfVars){
+//                if (c != null && c.getType() != type){
+//                    c.setType(type);
+//                }
+//            }
+//        }
+        this.type = type;
     }
 
     public boolean isComposed() {
