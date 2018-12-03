@@ -2,6 +2,8 @@
 package main;
 import java.io.*;
 import main.semantic.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GraceCompiler implements GraceCompilerConstants {
 
@@ -18,15 +20,33 @@ public class GraceCompiler implements GraceCompilerConstants {
   static final public void startParsing() throws ParseException {
   double a;
     VAR();
-   System.out.println("reconhecendo os tokens");
   }
 
 // Variable declaration rule
   static final public void VAR() throws ParseException {
     Var var = new Var();
     Token typeToken;
+    List<Var> listOfVar = new ArrayList<Var>();
     jj_consume_token(_VAR);
-    jj_consume_token(_CHAR);
+    listOfVar = VAR_ADD();
+    jj_consume_token(_COLON);
+    typeToken = jj_consume_token(_TYPE);
+    jj_consume_token(_SEMICOLON);
+        Type type = Type.valueOf(typeToken.toString().toUpperCase());
+        General.updateVar(listOfVar, type);
+        for (Var v: listOfVar){
+            System.out.println(v.getId().toString());
+            System.out.println(v.getType().toString());
+        }
+  }
+
+  static final public List<Var> VAR_ADD() throws ParseException {
+    List<Var> listOfVar = new ArrayList<Var>();
+    Var var = new Var();
+    Token id;
+    String idString;
+    String val = new String();
+    id = jj_consume_token(_ID);
     label_1:
     while (true) {
       if (jj_2_1(6)) {
@@ -34,30 +54,29 @@ public class GraceCompiler implements GraceCompilerConstants {
       } else {
         break label_1;
       }
-      if (jj_2_2(6)) {
-        jj_consume_token(_CHAR);
-      } else if (jj_2_3(6)) {
-        jj_consume_token(_INT);
-      } else {
-        jj_consume_token(-1);
-        throw new ParseException();
+      jj_consume_token(_ASSIGN);
+      label_2:
+      while (true) {
+        if (jj_2_2(6)) {
+          ;
+        } else {
+          break label_2;
+        }
+        if (jj_2_3(6)) {
+          jj_consume_token(_INT);
+        } else if (jj_2_4(6)) {
+          jj_consume_token(_CHAR);
+        } else {
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
       }
     }
-    jj_consume_token(_ASSIGN);
-    if (jj_2_4(6)) {
-      jj_consume_token(_INT);
-    } else if (jj_2_5(6)) {
-      jj_consume_token(_CHAR);
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    jj_consume_token(_COLON);
-    typeToken = jj_consume_token(_TYPE);
-    jj_consume_token(_SEMICOLON);
-        Type type = Type.valueOf(typeToken.toString().toUpperCase());
-        General.updateVar(var, type);
-        System.out.println(var.getType().toString());
+        idString = id.toString();
+        var.setId(idString);
+        listOfVar.add(var);
+        {if (true) return listOfVar;}
+    throw new Error("Missing return statement in function");
   }
 
   static private boolean jj_2_1(int xla) {
@@ -88,39 +107,32 @@ public class GraceCompiler implements GraceCompilerConstants {
     finally { jj_save(3, xla); }
   }
 
-  static private boolean jj_2_5(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_5(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(4, xla); }
-  }
-
-  static private boolean jj_3_2() {
-    if (jj_scan_token(_CHAR)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_1() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_2()) {
-    jj_scanpos = xsp;
-    if (jj_3_3()) return true;
-    }
-    return false;
-  }
-
   static private boolean jj_3_3() {
     if (jj_scan_token(_INT)) return true;
     return false;
   }
 
-  static private boolean jj_3_4() {
-    if (jj_scan_token(_INT)) return true;
+  static private boolean jj_3_2() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_3()) {
+    jj_scanpos = xsp;
+    if (jj_3_4()) return true;
+    }
     return false;
   }
 
-  static private boolean jj_3_5() {
+  static private boolean jj_3_1() {
+    if (jj_scan_token(_ASSIGN)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_2()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3_4() {
     if (jj_scan_token(_CHAR)) return true;
     return false;
   }
@@ -150,7 +162,7 @@ public class GraceCompiler implements GraceCompilerConstants {
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[5];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[4];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -402,7 +414,7 @@ public class GraceCompiler implements GraceCompilerConstants {
 
   static private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 4; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -413,7 +425,6 @@ public class GraceCompiler implements GraceCompilerConstants {
             case 1: jj_3_2(); break;
             case 2: jj_3_3(); break;
             case 3: jj_3_4(); break;
-            case 4: jj_3_5(); break;
           }
         }
         p = p.next;

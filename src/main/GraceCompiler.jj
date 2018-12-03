@@ -8,6 +8,8 @@ PARSER_BEGIN(GraceCompiler)
 package main;
 import java.io.*;
 import main.semantic.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GraceCompiler{
 
@@ -37,63 +39,64 @@ TOKEN :
 {
  
   // definitions
+    <_DEF: "def">
+    |<_VAR: "var">
+    |<_TYPE: "int" | "bool" | "string" | "void">
 
-   <_DEF: "def">
-  |<_VAR: "var">
-  |<_TYPE: "int" | "bool" | "string" | "void">
-
-  // primitives
-
-  |<_BOOL: "true" | "false">
-  |<_INT: (["0"-"9"])+>
-  |<_STR: ["\""] (<_CHAR> | <_INT> | " ")* ["\""]>
-  |<_CHAR: ["a"-"z"] | ["A" - "Z"] | ["_"]>
 
   //  operators and symbols
 
-  |<_LPAR: "(">
-  |<_RPAR: ")">
-  |<_LBRACE: "{">
-  |<_RBRACE: "}">
-  |<_LBRACK: "[">
-  |<_RBRACK: "]">
-  |<_COMMA: ",">
-  |<_SEMICOLON: ";">
-  |<_SUM: "+">
-  |<_SUB: "-">
-  |<_MULT: "*">
-  |<_DIV: "/">
-  |<_MOD: "%">
-  |<_EQUAL: "==">
-  |<_NEQUAL: "!=">
-  |<_GTHAN: ">">
-  |<_LTHAN: "<">
-  |<_GEQUAL: ">=">
-  |<_LEQUAL: "<=">
-  |<_LOG_OR: "||">
-  |<_LOG_AND: "&&">
-  |<_LOG_NOT: "!">
-  |<_ASSIGN: "=">
-  |<_SUM_ASSIGN: "+=">
-  |<_SUB_ASSIGN: "-=">
-  |<_MULT_ASSIGN: "*=">
-  |<_DIV_ASSIGN: "/=">
-  |<_MOD_ASSIGN: "%=">
-  |<_COND: "?">
-  |<_COLON: ":">
+    |<_LPAR: "(">
+    |<_RPAR: ")">
+    |<_LBRACE: "{">
+    |<_RBRACE: "}">
+    |<_LBRACK: "[">
+    |<_RBRACK: "]">
+    |<_COMMA: ",">
+    |<_SEMICOLON: ";">
+    |<_SUM: "+">
+    |<_SUB: "-">
+    |<_MULT: "*">
+    |<_DIV: "/">
+    |<_MOD: "%">
+    |<_EQUAL: "==">
+    |<_NEQUAL: "!=">
+    |<_GTHAN: ">">
+    |<_LTHAN: "<">
+    |<_GEQUAL: ">=">
+    |<_LEQUAL: "<=">
+    |<_LOG_OR: "||">
+    |<_LOG_AND: "&&">
+    |<_LOG_NOT: "!">
+    |<_ASSIGN: "=">
+    |<_SUM_ASSIGN: "+=">
+    |<_SUB_ASSIGN: "-=">
+    |<_MULT_ASSIGN: "*=">
+    |<_DIV_ASSIGN: "/=">
+    |<_MOD_ASSIGN: "%=">
+    |<_COND: "?">
+    |<_COLON: ":">
 
   // cmds
 
-  | <_IF: "if">
-  | <_ELSE: "else">
-  | <_FOR: "for">
-  | <_WHILE: "while">
-  | <_READ: "read">
-  | <_WRITE: "write">
-  | <_SKIP: "skip">
-  | <_STOP: "stop">
-  | <_RETURN: "return">
-  | <_ID: <_CHAR> (<_CHAR> | <_INT>)*>
+    | <_IF: "if">
+    | <_ELSE: "else">
+    | <_FOR: "for">
+    | <_WHILE: "while">
+    | <_READ: "read">
+    | <_WRITE: "write">
+    | <_SKIP: "skip">
+    | <_STOP: "stop">
+    | <_RETURN: "return">
+
+
+    | <_ID: <_CHAR> (<_CHAR> | <_INT>)*>
+
+    // primitives
+    |<_BOOL: "true" | "false">
+    |<_INT: (["0"-"9"])+>
+    |<_STR: ["\""] (<_CHAR> | <_INT> | " ")* ["\""]>
+    |<_CHAR: ["a"-"z"] | ["A" - "Z"] | ["_"]>
 
 }
 
@@ -110,12 +113,35 @@ void VAR():
 {
     Var var = new Var();
     Token typeToken;
+    List<Var> listOfVar = new ArrayList<Var>();
 }
 {
-    <_VAR> <_CHAR> (<_CHAR> | <_INT>)* <_ASSIGN> (<_INT> | <_CHAR>) <_COLON> typeToken = <_TYPE> <_SEMICOLON>
+    <_VAR> listOfVar = VAR_ADD() <_COLON> typeToken = <_TYPE> <_SEMICOLON>
     {
+
         Type type = Type.valueOf(typeToken.toString().toUpperCase());
-        General.updateVar(var, type);
-        System.out.println(var.getType().toString());
+        General.updateVar(listOfVar, type);
+        for (Var v: listOfVar){
+            System.out.println(v.getId().toString());
+            System.out.println(v.getType().toString());
+        }
+    }
+}
+
+List<Var> VAR_ADD():
+{
+    List<Var> listOfVar = new ArrayList<Var>();
+    Var var = new Var();
+    Token id;
+    String idString;
+    String val = new String();
+}
+{
+    id = <_ID> (<_ASSIGN> (<_INT> | <_CHAR>)*)*
+    {
+        idString = id.toString();
+        var.setId(idString);
+        listOfVar.add(var);
+        return listOfVar;
     }
 }
