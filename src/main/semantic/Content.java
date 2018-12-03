@@ -5,6 +5,11 @@ public class Content {
     private Type type;
     private Object content;
 
+    public Content(Type type, Object content) {
+        this.type = type;
+        this.content = content;
+    }
+
     public Type getType() {
         return type;
     }

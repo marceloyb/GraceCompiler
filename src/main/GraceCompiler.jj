@@ -6,12 +6,16 @@ options{
 PARSER_BEGIN(GraceCompiler)
 
 package main;
+import java.util.Stack;
 import java.io.*;
 import main.semantic.*;
 import java.util.ArrayList;
 import java.util.List;
+import main.exceptions.*;
 
 public class GraceCompiler{
+
+  public static Stack<SymbolList> stack = new Stack<SymbolList>();
 
   public static void main(String args[]){
     try{
@@ -37,11 +41,18 @@ SKIP :
 
 TOKEN :
 {
- 
+
   // definitions
     <_DEF: "def">
     |<_VAR: "var">
     |<_TYPE: "int" | "bool" | "string" | "void">
+
+    // primitives
+
+    |<_BOOL: "true" | "false">
+    |<_NUMBER: (["0"-"9"])+>
+    |<_STR: ["\""] (<_CHAR> | <_NUMBER> | " ")* ["\""]>
+
 
 
   //  operators and symbols
@@ -90,13 +101,9 @@ TOKEN :
     | <_RETURN: "return">
 
 
-    | <_ID: <_CHAR> (<_CHAR> | <_INT>)*>
-
-    // primitives
-    |<_BOOL: "true" | "false">
-    |<_INT: (["0"-"9"])+>
-    |<_STR: ["\""] (<_CHAR> | <_INT> | " ")* ["\""]>
+    | <_ID: <_CHAR> (<_CHAR> | <_NUMBER>)*>
     |<_CHAR: ["a"-"z"] | ["A" - "Z"] | ["_"]>
+
 
 }
 
@@ -105,7 +112,19 @@ void startParsing():
   double a;
 }
 {
+
   VAR()
+}
+
+void MAIN_START():
+{
+    SymbolList rootList = new SymbolList(null, null);
+    GraceCompiler.stack.push(rootList);
+}
+// declaração das variáveis da main
+{
+    {
+    }
 }
 
 // Variable declaration rule
@@ -137,11 +156,66 @@ List<Var> VAR_ADD():
     String val = new String();
 }
 {
-    id = <_CHAR> (<_ASSIGN> (<_INT> | <_CHAR>)*)*
+    (id = <_ID> (<_ASSIGN> (<_NUMBER> | <_CHAR>)*)*)
     {
         idString = id.toString();
         var.setId(idString);
         listOfVar.add(var);
         return listOfVar;
+    }
+}
+
+void EXPRESSION():
+{
+    Content content = null;
+}
+{
+    content = TERM()
+}
+
+Content TERM():
+{
+    SymbolList list = GraceCompiler.stack.peek();
+    Integer numVal = null;
+    Boolean boolVal = null;
+    String strVal = null;
+    Content idObj = null;
+
+    Type type = null;
+    Content content = null;
+    Token id = null, number = null, bool = null, str = null;
+}
+{
+    (number = <_NUMBER> | bool = <_BOOL> | str = <_STR> | id = <_ID>)
+    {
+        if (number != null){
+            numVal = Integer.valueOf(number.toString());
+            content.setContent(numVal);
+            content.setType(Type.INT);
+        }
+
+        if (bool != null){
+            boolVal = Boolean.valueOf(bool.toString());
+            content.setContent(boolVal);
+            content.setType(Type.BOOL);
+        }
+
+        if (str != null){
+            strVal = str.toString();
+            content.setContent(strVal);
+            content.setType(Type.STRING);
+        }
+
+        if (id != null){
+            idObj = list.getValue(id.toString());
+            if (idObj != null){
+                content = idObj;
+            }
+            else{
+                throw new UndeclaredId();
+            }
+        }
+
+        return content;
     }
 }

@@ -17,91 +17,91 @@ public interface GraceCompilerConstants {
   /** RegularExpression Id. */
   int _TYPE = 7;
   /** RegularExpression Id. */
-  int _LPAR = 8;
+  int _BOOL = 8;
   /** RegularExpression Id. */
-  int _RPAR = 9;
+  int _NUMBER = 9;
   /** RegularExpression Id. */
-  int _LBRACE = 10;
+  int _STR = 10;
   /** RegularExpression Id. */
-  int _RBRACE = 11;
+  int _LPAR = 11;
   /** RegularExpression Id. */
-  int _LBRACK = 12;
+  int _RPAR = 12;
   /** RegularExpression Id. */
-  int _RBRACK = 13;
+  int _LBRACE = 13;
   /** RegularExpression Id. */
-  int _COMMA = 14;
+  int _RBRACE = 14;
   /** RegularExpression Id. */
-  int _SEMICOLON = 15;
+  int _LBRACK = 15;
   /** RegularExpression Id. */
-  int _SUM = 16;
+  int _RBRACK = 16;
   /** RegularExpression Id. */
-  int _SUB = 17;
+  int _COMMA = 17;
   /** RegularExpression Id. */
-  int _MULT = 18;
+  int _SEMICOLON = 18;
   /** RegularExpression Id. */
-  int _DIV = 19;
+  int _SUM = 19;
   /** RegularExpression Id. */
-  int _MOD = 20;
+  int _SUB = 20;
   /** RegularExpression Id. */
-  int _EQUAL = 21;
+  int _MULT = 21;
   /** RegularExpression Id. */
-  int _NEQUAL = 22;
+  int _DIV = 22;
   /** RegularExpression Id. */
-  int _GTHAN = 23;
+  int _MOD = 23;
   /** RegularExpression Id. */
-  int _LTHAN = 24;
+  int _EQUAL = 24;
   /** RegularExpression Id. */
-  int _GEQUAL = 25;
+  int _NEQUAL = 25;
   /** RegularExpression Id. */
-  int _LEQUAL = 26;
+  int _GTHAN = 26;
   /** RegularExpression Id. */
-  int _LOG_OR = 27;
+  int _LTHAN = 27;
   /** RegularExpression Id. */
-  int _LOG_AND = 28;
+  int _GEQUAL = 28;
   /** RegularExpression Id. */
-  int _LOG_NOT = 29;
+  int _LEQUAL = 29;
   /** RegularExpression Id. */
-  int _ASSIGN = 30;
+  int _LOG_OR = 30;
   /** RegularExpression Id. */
-  int _SUM_ASSIGN = 31;
+  int _LOG_AND = 31;
   /** RegularExpression Id. */
-  int _SUB_ASSIGN = 32;
+  int _LOG_NOT = 32;
   /** RegularExpression Id. */
-  int _MULT_ASSIGN = 33;
+  int _ASSIGN = 33;
   /** RegularExpression Id. */
-  int _DIV_ASSIGN = 34;
+  int _SUM_ASSIGN = 34;
   /** RegularExpression Id. */
-  int _MOD_ASSIGN = 35;
+  int _SUB_ASSIGN = 35;
   /** RegularExpression Id. */
-  int _COND = 36;
+  int _MULT_ASSIGN = 36;
   /** RegularExpression Id. */
-  int _COLON = 37;
+  int _DIV_ASSIGN = 37;
   /** RegularExpression Id. */
-  int _IF = 38;
+  int _MOD_ASSIGN = 38;
   /** RegularExpression Id. */
-  int _ELSE = 39;
+  int _COND = 39;
   /** RegularExpression Id. */
-  int _FOR = 40;
+  int _COLON = 40;
   /** RegularExpression Id. */
-  int _WHILE = 41;
+  int _IF = 41;
   /** RegularExpression Id. */
-  int _READ = 42;
+  int _ELSE = 42;
   /** RegularExpression Id. */
-  int _WRITE = 43;
+  int _FOR = 43;
   /** RegularExpression Id. */
-  int _SKIP = 44;
+  int _WHILE = 44;
   /** RegularExpression Id. */
-  int _STOP = 45;
+  int _READ = 45;
   /** RegularExpression Id. */
-  int _RETURN = 46;
+  int _WRITE = 46;
   /** RegularExpression Id. */
-  int _ID = 47;
+  int _SKIP = 47;
   /** RegularExpression Id. */
-  int _BOOL = 48;
+  int _STOP = 48;
   /** RegularExpression Id. */
-  int _INT = 49;
+  int _RETURN = 49;
   /** RegularExpression Id. */
-  int _STR = 50;
+  int _ID = 50;
   /** RegularExpression Id. */
   int _CHAR = 51;
 
@@ -118,6 +118,9 @@ public interface GraceCompilerConstants {
     "\"def\"",
     "\"var\"",
     "<_TYPE>",
+    "<_BOOL>",
+    "<_NUMBER>",
+    "<_STR>",
     "\"(\"",
     "\")\"",
     "\"{\"",
@@ -158,9 +161,6 @@ public interface GraceCompilerConstants {
     "\"stop\"",
     "\"return\"",
     "<_ID>",
-    "<_BOOL>",
-    "<_INT>",
-    "<_STR>",
     "<_CHAR>",
   };
 
