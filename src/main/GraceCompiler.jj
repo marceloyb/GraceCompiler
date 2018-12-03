@@ -137,7 +137,7 @@ List<Var> VAR_ADD():
     String val = new String();
 }
 {
-    id = <_ID> (<_ASSIGN> (<_INT> | <_CHAR>)*)*
+    id = <_CHAR> (<_ASSIGN> (<_INT> | <_CHAR>)*)*
     {
         idString = id.toString();
         var.setId(idString);
