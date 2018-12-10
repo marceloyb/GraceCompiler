@@ -32,17 +32,18 @@ public class GraceCompiler implements GraceCompilerConstants {
   static final public void GLOBAL_START() throws ParseException {
     SymbolList rootList = new SymbolList(null, null);
     GraceCompiler.stackRoot.push(rootList);
-    List<Var> globalVar;
+    List<Var> globalVarList = new ArrayList<Var>();;
+    globalVarList = VAR_SECTION(rootList);
+                                           rootList.setVarList(globalVarList);
     MAIN_START(rootList);
 
   }
 
   static final public void MAIN_START(SymbolList list) throws ParseException {
-    List<Var> mainVarList = new ArrayList<Var>();;
+    List<Var> mainVarList = new ArrayList<Var>();
     SymbolList mainSymbolList = new SymbolList(list, mainVarList);
     SymbolList backup = GraceCompiler.stackRoot.peek();
-    mainVarList = VAR_SECTION(list);
-    SUBPROGRAM(mainSymbolList);
+    SUBPROGRAM(list);
 
   }
 
@@ -100,7 +101,7 @@ public class GraceCompiler implements GraceCompilerConstants {
     id = jj_consume_token(_ID);
     label_1:
     while (true) {
-      if (jj_2_1(6)) {
+      if (jj_2_1(8)) {
         ;
       } else {
         break label_1;
@@ -108,7 +109,7 @@ public class GraceCompiler implements GraceCompilerConstants {
       jj_consume_token(_ASSIGN);
       initialized = TERM(list);
     }
-    if (jj_2_2(6)) {
+    if (jj_2_2(8)) {
       jj_consume_token(_COMMA);
       recursiveListOfVar = VAR_ADD(list);
     } else {
@@ -116,6 +117,7 @@ public class GraceCompiler implements GraceCompilerConstants {
     }
         idString = id.toString();
         var.setType(initialized);
+        System.out.println(idString);
 
         if (initialized != Type.VOID){
             var.setReferencia(true);
@@ -139,13 +141,14 @@ public class GraceCompiler implements GraceCompilerConstants {
     List<Var> recursiveVar = null;
     jj_consume_token(_VAR);
     varList = VAR_ROOT(list);
-    if (jj_2_3(6)) {
+    if (jj_2_3(8)) {
       recursiveVar = VAR_SECTION(list);
     } else {
       ;
     }
         if (recursiveVar != null){
             varList.addAll(recursiveVar);
+            System.out.println("VARIAVEL RECUSIVA");
         }
         System.out.println("saiu no var section");
         {if (true) return varList;}
@@ -157,13 +160,13 @@ public class GraceCompiler implements GraceCompilerConstants {
     Type type = null;
     Token id = null, number = null, bool = null, str = null;
     Var idObj = null;
-    if (jj_2_4(6)) {
+    if (jj_2_4(8)) {
       number = jj_consume_token(_NUMBER);
-    } else if (jj_2_5(6)) {
+    } else if (jj_2_5(8)) {
       bool = jj_consume_token(_BOOL);
-    } else if (jj_2_6(6)) {
+    } else if (jj_2_6(8)) {
       str = jj_consume_token(_STR);
-    } else if (jj_2_7(6)) {
+    } else if (jj_2_7(8)) {
       id = jj_consume_token(_ID);
     } else {
       jj_consume_token(-1);
@@ -188,7 +191,7 @@ public class GraceCompiler implements GraceCompilerConstants {
                 returnVal = idObj.getType();
             }
             else{
-                System.out.println("Error on variable " + id.toString());
+                System.out.println("Error on variable \u005c"" + id.toString() + "\u005c"");
                 {if (true) throw new UndeclaredId();}
 
             }
@@ -205,23 +208,31 @@ public class GraceCompiler implements GraceCompilerConstants {
     List<Var> subProgramVar = new ArrayList<Var>();
     Token typeToken = null;
     Token idToken = null;
+    Type subProgType = Type.VOID;
     jj_consume_token(_DEF);
     idToken = jj_consume_token(_ID);
     jj_consume_token(_LPAR);
-    if (jj_2_8(6)) {
+    if (jj_2_8(8)) {
       parameterList = PARAMETER_LIST();
     } else {
       ;
     }
     jj_consume_token(_RPAR);
-    if (jj_2_9(6)) {
+    if (jj_2_9(8)) {
       jj_consume_token(_COLON);
       typeToken = jj_consume_token(_TYPE);
     } else {
       ;
     }
+    {
+        if (typeToken != null)
+            subProgType = General.updateType(typeToken);
+        for (Var v: list.getVarList()){
+            parameterList.add(v);
+        }
+    }
         subProgramList.setVarList(parameterList);
-    BLOCK(subProgramList);
+    BLOCK(subProgramList, subProgType);
         subProg.setSubSymbolList(subProgramList);
         subProg.setId(idToken.toString());
         if (typeToken != null){
@@ -239,7 +250,7 @@ public class GraceCompiler implements GraceCompilerConstants {
     parameterList = PARAMETER_ADD();
     jj_consume_token(_COLON);
     typeToken = jj_consume_token(_TYPE);
-    if (jj_2_10(6)) {
+    if (jj_2_10(8)) {
       jj_consume_token(_SEMICOLON);
       recursiveList = PARAMETER_LIST();
     } else {
@@ -271,20 +282,20 @@ public class GraceCompiler implements GraceCompilerConstants {
     List<Var> recursiveList = new ArrayList<Var>();
     Token idToken;
     boolean composed = false;
-    if (jj_2_13(6)) {
+    if (jj_2_13(8)) {
       idToken = jj_consume_token(_ID);
       jj_consume_token(_LBRACK);
       jj_consume_token(_RBRACK);
-      if (jj_2_11(6)) {
+      if (jj_2_11(8)) {
         jj_consume_token(_COMMA);
         recursiveList = PARAMETER_ADD();
       } else {
         ;
       }
                                                                                       composed = true;
-    } else if (jj_2_14(6)) {
+    } else if (jj_2_14(8)) {
       idToken = jj_consume_token(_ID);
-      if (jj_2_12(6)) {
+      if (jj_2_12(8)) {
         jj_consume_token(_COMMA);
         recursiveList = PARAMETER_ADD();
       } else {
@@ -308,10 +319,10 @@ public class GraceCompiler implements GraceCompilerConstants {
     throw new Error("Missing return statement in function");
   }
 
-  static final public void BLOCK(SymbolList subProgramList) throws ParseException {
+  static final public void BLOCK(SymbolList subProgramList, Type blockType) throws ParseException {
     List<Var> subProgVarList = new ArrayList<Var>();
     jj_consume_token(_LBRACE);
-    if (jj_2_15(6)) {
+    if (jj_2_15(8)) {
       subProgVarList = VAR_SECTION(subProgramList);
         for (Var v: subProgVarList){
             subProgramList.getVarList().add(v);
@@ -319,8 +330,8 @@ public class GraceCompiler implements GraceCompilerConstants {
     } else {
       ;
     }
-    if (jj_2_16(6)) {
-      STATEMENT(subProgramList);
+    if (jj_2_16(8)) {
+      STATEMENT(subProgramList, blockType);
     } else {
       ;
     }
@@ -328,27 +339,69 @@ public class GraceCompiler implements GraceCompilerConstants {
         System.out.println("entrou no block");
   }
 
-  static final public void STATEMENT(SymbolList subProgramList) throws ParseException {
-    if (jj_2_17(6)) {
+  static final public void STATEMENT(SymbolList subProgramList, Type blockType) throws ParseException {
+    if (jj_2_17(8)) {
       SUBPROGRAM(subProgramList);
-    } else if (jj_2_18(6)) {
-      COMMAND(subProgramList);
+    } else if (jj_2_18(8)) {
+      COMMAND(subProgramList, blockType);
     } else {
       jj_consume_token(-1);
       throw new ParseException();
     }
-    if (jj_2_19(6)) {
-      STATEMENT(subProgramList);
+    if (jj_2_19(8)) {
+      STATEMENT(subProgramList, blockType);
     } else {
       ;
     }
         System.out.println("entrou no steatement");
   }
 
-  static final public void COMMAND(SymbolList subProgramList) throws ParseException {
+  static final public void COMMAND(SymbolList subProgramList, Type blockType) throws ParseException {
     Type commandType = null;
-    commandType = ATTRIBUTION(subProgramList);
+    if (jj_2_20(8)) {
+      commandType = ATTRIBUTION(subProgramList);
+    } else if (jj_2_21(8)) {
+      commandType = IF(subProgramList);
+    } else if (jj_2_22(8)) {
+      commandType = WHILE(subProgramList);
+    } else if (jj_2_23(8)) {
+      SKIP_CMD(subProgramList, blockType);
+    } else if (jj_2_24(8)) {
+      STOP_CMD(subProgramList, blockType);
+    } else if (jj_2_25(8)) {
+      RETURN(subProgramList, blockType);
 
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void RETURN(SymbolList subProgramList, Type blockType) throws ParseException {
+    Token returnToken = null;
+    Type blockTypeVal = Type.VOID;
+    returnToken = jj_consume_token(_RETURN);
+    blockTypeVal = EXPRESSION(subProgramList);
+    jj_consume_token(_SEMICOLON);
+        if(blockType != Type.VOID && !blockTypeVal.equals(blockType)){
+            System.out.println("Semantic error: Block RETURN type is not the same of the declaration");
+        }
+  }
+
+  static final public void SKIP_CMD(SymbolList subProgramList, Type blockType) throws ParseException {
+    jj_consume_token(_SKIP);
+    jj_consume_token(_SEMICOLON);
+        if (blockType != Type.WHILE && blockType != Type.FOR){
+            System.out.println("Syntactic error: Bad use of SKIP command");
+        }
+  }
+
+  static final public void STOP_CMD(SymbolList subProgramList, Type blockType) throws ParseException {
+    jj_consume_token(_STOP);
+    jj_consume_token(_SEMICOLON);
+        if (blockType != Type.WHILE && blockType != Type.FOR){
+            System.out.println("Syntactic error: Bad use of STOP command");
+        }
   }
 
   static final public Type ATTRIBUTION(SymbolList subProgramList) throws ParseException {
@@ -358,7 +411,7 @@ public class GraceCompiler implements GraceCompilerConstants {
     Type assignTypeComposed = Type.VOID;
     List<Var> varList = subProgramList.getVarList();
     idToken = jj_consume_token(_ID);
-    if (jj_2_20(6)) {
+    if (jj_2_26(8)) {
       jj_consume_token(_LBRACK);
       jj_consume_token(_RBRACK);
     } else {
@@ -380,13 +433,65 @@ public class GraceCompiler implements GraceCompilerConstants {
     throw new Error("Missing return statement in function");
   }
 
+  static final public Type IF(SymbolList subProgramList) throws ParseException {
+    Type testType = Type.VOID;
+    Type elseType = Type.VOID;
+    jj_consume_token(_IF);
+    jj_consume_token(_LPAR);
+    testType = EXPRESSION(subProgramList);
+    jj_consume_token(_RPAR);
+    BLOCK(subProgramList, Type.VOID);
+    elseType = ELSE(subProgramList);
+        if (testType != Type.BOOL){
+            System.out.println("Semantic error: Expression in IF command must be of BOOLEAN type");
+        }
+        {if (true) return testType;}
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public Type ELSE(SymbolList subProgramList) throws ParseException {
+    Type ifType = Type.VOID;
+    jj_consume_token(_ELSE);
+    if (jj_2_27(8)) {
+      ifType = IF(subProgramList);
+    } else if (jj_2_28(8)) {
+      BLOCK(subProgramList, Type.VOID);
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+        {if (true) return ifType;}
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public Type WHILE(SymbolList subProgramList) throws ParseException {
+    Type testType = Type.VOID;
+    jj_consume_token(_WHILE);
+    jj_consume_token(_LPAR);
+    testType = EXPRESSION(subProgramList);
+    jj_consume_token(_RPAR);
+    BLOCK(subProgramList, Type.WHILE);
+        {if (true) return testType;}
+    throw new Error("Missing return statement in function");
+  }
+
+//Type FOR(SymbolList subProgramList):
+//{
+//    Type atribType = Type.VOID;
+//    Type atribExpress = Type.VOID;
+//    Type atribPass = Type.VOID;
+//}
+//{
+//    <_FOR> <_LPAR> atribType = ATTRIBUTION(subProgramList) atribExpress = EXPRESSION(subProgramList) <_SEMICOLON>
+//    atribPass = ATTRIBUTION(subProgramList) BLOCK(subProgramList, Type.FOR)
+//    {
+//
+//    }
+//}
   static final public Type EXPRESSION(SymbolList subProgramList) throws ParseException {
     Type expressionType = Type.VOID;
-    Operation operationValue = OperationType.VOID;
-    if (jj_2_21(6)) {
-      expressionType = TERM(subProgramList);
-    } else if (jj_2_22(6)) {
-      operationValue = OPERATION(subProgramList);
+    OperationType operationValue = OperationType.VOID;
+    operationValue = OPERATION(subProgramList);
         if (!operationValue.equals(OperationType.VOID)){
             if(operationValue.equals(OperationType.ARIT)){
                 expressionType = Type.INT;
@@ -394,52 +499,83 @@ public class GraceCompiler implements GraceCompilerConstants {
             else expressionType = Type.BOOL;
         }
         {if (true) return expressionType;}
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
     throw new Error("Missing return statement in function");
   }
 
-  static final public Operation OPERATION(SymbolList subProgramList) throws ParseException {
+  static final public OperationType OPERATION(SymbolList subProgramList) throws ParseException {
     Type firstTerm = Type.VOID;
     Type secondTerm = Type.VOID;
+    OperationType firstTermOp = OperationType.VOID;
+    OperationType secondTermOp = OperationType.VOID;
+    OperationType opType = OperationType.VOID;
     Token operationToken = null;
     Token firstTermToken = null;
     Token secondTermToken = null;
-    if (jj_2_23(6)) {
+    if (jj_2_29(8)) {
       firstTerm = TERM(subProgramList);
-    } else if (jj_2_24(6)) {
+    } else if (jj_2_30(8)) {
       jj_consume_token(_LPAR);
-      firstTerm = OPERATION(subProgramList);
+      firstTermOp = OPERATION(subProgramList);
     } else {
       jj_consume_token(-1);
       throw new ParseException();
     }
-    if (jj_2_25(6)) {
-      operationToken = jj_consume_token(_ARIT);
-    } else if (jj_2_26(6)) {
-      operationToken = jj_consume_token(_RELAC);
-    } else if (jj_2_27(6)) {
-      operationToken = jj_consume_token(_EQUALITY);
-    } else if (jj_2_28(6)) {
-      operationToken = jj_consume_token(_LOGICAL);
+    if (jj_2_37(8)) {
+      if (jj_2_31(8)) {
+        operationToken = jj_consume_token(_ARIT);
+      } else if (jj_2_32(8)) {
+        operationToken = jj_consume_token(_RELAC);
+      } else if (jj_2_33(8)) {
+        operationToken = jj_consume_token(_EQUALITY);
+      } else if (jj_2_34(8)) {
+        operationToken = jj_consume_token(_LOGICAL);
+      } else {
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      if (jj_2_35(8)) {
+        secondTerm = TERM(subProgramList);
+      } else if (jj_2_36(8)) {
+        jj_consume_token(_LPAR);
+        secondTermOp = OPERATION(subProgramList);
+      } else {
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
     } else {
-      jj_consume_token(-1);
-      throw new ParseException();
+      ;
     }
-    if (jj_2_29(6)) {
-      secondTerm = TERM(subProgramList);
-    } else if (jj_2_30(6)) {
-      jj_consume_token(_LPAR);
-      secondTerm = TERM(subProgramList);
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-        if(!firstTerm.equals(secondTerm)){
-            System.out.println("Semantic error. " + operationToken.toString() + " is impossible with " + firstTerm + " and " + secondTerm);
+        if(operationToken != null){
+            if (!firstTermOp.equals(OperationType.VOID)){
+                if(firstTermOp.equals(OperationType.ARIT)){
+                    firstTerm = Type.INT;
+                }
+                else firstTerm = Type.BOOL;
+            }
+
+            if (!secondTermOp.equals(OperationType.VOID)){
+                if(secondTermOp.equals(OperationType.ARIT)){
+                    secondTerm = Type.INT;
+                }
+                else secondTerm = Type.BOOL;
+            }
+
+            if(!firstTerm.equals(secondTerm)){
+                System.out.println("Semantic error: " + operationToken.toString() + " is impossible with " + firstTerm + " and " + secondTerm);
+            }
+
+            opType = General.updateOperationType(operationToken);
         }
+        else{
+            if(firstTerm.equals(Type.INT)){
+                opType = OperationType.ARIT;
+            }
+            else{
+                opType = OperationType.LOGIC;
+            }
+        }
+        {if (true) return opType;}
+    throw new Error("Missing return statement in function");
   }
 
   static private boolean jj_2_1(int xla) {
@@ -652,6 +788,55 @@ public class GraceCompiler implements GraceCompilerConstants {
     finally { jj_save(29, xla); }
   }
 
+  static private boolean jj_2_31(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_31(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(30, xla); }
+  }
+
+  static private boolean jj_2_32(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_32(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(31, xla); }
+  }
+
+  static private boolean jj_2_33(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_33(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(32, xla); }
+  }
+
+  static private boolean jj_2_34(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_34(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(33, xla); }
+  }
+
+  static private boolean jj_2_35(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_35(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(34, xla); }
+  }
+
+  static private boolean jj_2_36(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_36(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(35, xla); }
+  }
+
+  static private boolean jj_2_37(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_37(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(36, xla); }
+  }
+
   static private boolean jj_3R_8() {
     if (jj_scan_token(_DEF)) return true;
     if (jj_scan_token(_ID)) return true;
@@ -662,40 +847,7 @@ public class GraceCompiler implements GraceCompilerConstants {
     if (jj_scan_token(_RPAR)) return true;
     xsp = jj_scanpos;
     if (jj_3_9()) jj_scanpos = xsp;
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_6() {
-    if (jj_scan_token(_STR)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_17() {
-    if (jj_3R_8()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_11() {
-    if (jj_scan_token(_COMMA)) return true;
-    if (jj_3R_6()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_26() {
-    if (jj_scan_token(_RELAC)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_7() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_17()) {
-    jj_scanpos = xsp;
-    if (jj_3_18()) return true;
-    }
-    xsp = jj_scanpos;
-    if (jj_3_19()) jj_scanpos = xsp;
+    if (jj_3R_16()) return true;
     return false;
   }
 
@@ -709,24 +861,44 @@ public class GraceCompiler implements GraceCompilerConstants {
     return false;
   }
 
+  static private boolean jj_3_22() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_25() {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_6() {
+    if (jj_scan_token(_STR)) return true;
+    return false;
+  }
+
   static private boolean jj_3_10() {
     if (jj_scan_token(_SEMICOLON)) return true;
     if (jj_3R_5()) return true;
     return false;
   }
 
-  static private boolean jj_3_22() {
-    if (jj_3R_10()) return true;
+  static private boolean jj_3R_11() {
+    if (jj_scan_token(_IF)) return true;
+    if (jj_scan_token(_LPAR)) return true;
+    if (jj_3R_19()) return true;
+    if (jj_scan_token(_RPAR)) return true;
+    if (jj_3R_16()) return true;
+    if (jj_3R_20()) return true;
     return false;
   }
 
-  static private boolean jj_3_9() {
-    if (jj_scan_token(_COLON)) return true;
-    if (jj_scan_token(_TYPE)) return true;
+  static private boolean jj_3_26() {
+    if (jj_scan_token(_LBRACK)) return true;
+    if (jj_scan_token(_RBRACK)) return true;
     return false;
   }
 
-  static private boolean jj_3R_12() {
+  static private boolean jj_3R_16() {
     if (jj_scan_token(_LBRACE)) return true;
     Token xsp;
     xsp = jj_scanpos;
@@ -737,19 +909,56 @@ public class GraceCompiler implements GraceCompilerConstants {
     return false;
   }
 
-  static private boolean jj_3_5() {
-    if (jj_scan_token(_BOOL)) return true;
-    return false;
-  }
-
   static private boolean jj_3_12() {
     if (jj_scan_token(_COMMA)) return true;
     if (jj_3R_6()) return true;
     return false;
   }
 
-  static private boolean jj_3_3() {
-    if (jj_3R_4()) return true;
+  static private boolean jj_3_9() {
+    if (jj_scan_token(_COLON)) return true;
+    if (jj_scan_token(_TYPE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_5() {
+    if (jj_scan_token(_BOOL)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_31() {
+    if (jj_scan_token(_ARIT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_35() {
+    if (jj_3R_2()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_37() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_31()) {
+    jj_scanpos = xsp;
+    if (jj_3_32()) {
+    jj_scanpos = xsp;
+    if (jj_3_33()) {
+    jj_scanpos = xsp;
+    if (jj_3_34()) return true;
+    }
+    }
+    }
+    xsp = jj_scanpos;
+    if (jj_3_35()) {
+    jj_scanpos = xsp;
+    if (jj_3_36()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3_19() {
+    if (jj_3R_7()) return true;
     return false;
   }
 
@@ -758,53 +967,31 @@ public class GraceCompiler implements GraceCompilerConstants {
     return false;
   }
 
-  static private boolean jj_3_25() {
-    if (jj_scan_token(_ARIT)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_23() {
-    if (jj_3R_2()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_10() {
+  static private boolean jj_3R_17() {
     Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_23()) {
-    jj_scanpos = xsp;
-    if (jj_3_24()) return true;
-    }
-    xsp = jj_scanpos;
-    if (jj_3_25()) {
-    jj_scanpos = xsp;
-    if (jj_3_26()) {
-    jj_scanpos = xsp;
-    if (jj_3_27()) {
-    jj_scanpos = xsp;
-    if (jj_3_28()) return true;
-    }
-    }
-    }
     xsp = jj_scanpos;
     if (jj_3_29()) {
     jj_scanpos = xsp;
     if (jj_3_30()) return true;
     }
+    xsp = jj_scanpos;
+    if (jj_3_37()) jj_scanpos = xsp;
     return false;
   }
 
-  static private boolean jj_3R_11() {
-    if (jj_3R_3()) return true;
-    if (jj_scan_token(_COLON)) return true;
-    if (jj_scan_token(_TYPE)) return true;
+  static private boolean jj_3R_10() {
+    if (jj_scan_token(_ID)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_26()) jj_scanpos = xsp;
+    if (jj_scan_token(_ASSIGN)) return true;
+    if (jj_3R_19()) return true;
     if (jj_scan_token(_SEMICOLON)) return true;
     return false;
   }
 
-  static private boolean jj_3_2() {
-    if (jj_scan_token(_COMMA)) return true;
-    if (jj_3R_3()) return true;
+  static private boolean jj_3_3() {
+    if (jj_3R_4()) return true;
     return false;
   }
 
@@ -816,16 +1003,6 @@ public class GraceCompiler implements GraceCompilerConstants {
     return false;
   }
 
-  static private boolean jj_3_28() {
-    if (jj_scan_token(_LOGICAL)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_4() {
-    if (jj_scan_token(_NUMBER)) return true;
-    return false;
-  }
-
   static private boolean jj_3_13() {
     if (jj_scan_token(_ID)) return true;
     if (jj_scan_token(_LBRACK)) return true;
@@ -833,6 +1010,50 @@ public class GraceCompiler implements GraceCompilerConstants {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_11()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3_34() {
+    if (jj_scan_token(_LOGICAL)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_6() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_13()) {
+    jj_scanpos = xsp;
+    if (jj_3_14()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3_21() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_18() {
+    if (jj_3R_3()) return true;
+    if (jj_scan_token(_COLON)) return true;
+    if (jj_scan_token(_TYPE)) return true;
+    if (jj_scan_token(_SEMICOLON)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_24() {
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_2() {
+    if (jj_scan_token(_COMMA)) return true;
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_4() {
+    if (jj_scan_token(_NUMBER)) return true;
     return false;
   }
 
@@ -852,45 +1073,31 @@ public class GraceCompiler implements GraceCompilerConstants {
     return false;
   }
 
-  static private boolean jj_3R_6() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_13()) {
-    jj_scanpos = xsp;
-    if (jj_3_14()) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3_19() {
-    if (jj_3R_7()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_14() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_21()) {
-    jj_scanpos = xsp;
-    if (jj_3_22()) return true;
-    }
+    if (jj_scan_token(_STOP)) return true;
+    if (jj_scan_token(_SEMICOLON)) return true;
     return false;
   }
 
-  static private boolean jj_3_21() {
-    if (jj_3R_2()) return true;
+  static private boolean jj_3_28() {
+    if (jj_3R_16()) return true;
     return false;
   }
 
-  static private boolean jj_3_20() {
-    if (jj_scan_token(_LBRACK)) return true;
-    if (jj_scan_token(_RBRACK)) return true;
+  static private boolean jj_3R_19() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_13() {
+    if (jj_scan_token(_SKIP)) return true;
+    if (jj_scan_token(_SEMICOLON)) return true;
     return false;
   }
 
   static private boolean jj_3R_4() {
     if (jj_scan_token(_VAR)) return true;
-    if (jj_3R_11()) return true;
+    if (jj_3R_18()) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_3()) jj_scanpos = xsp;
@@ -907,7 +1114,7 @@ public class GraceCompiler implements GraceCompilerConstants {
     return false;
   }
 
-  static private boolean jj_3_27() {
+  static private boolean jj_3_33() {
     if (jj_scan_token(_EQUALITY)) return true;
     return false;
   }
@@ -922,14 +1129,24 @@ public class GraceCompiler implements GraceCompilerConstants {
     return false;
   }
 
-  static private boolean jj_3R_13() {
-    if (jj_scan_token(_ID)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_20()) jj_scanpos = xsp;
-    if (jj_scan_token(_ASSIGN)) return true;
-    if (jj_3R_14()) return true;
+  static private boolean jj_3R_15() {
+    if (jj_scan_token(_RETURN)) return true;
+    if (jj_3R_19()) return true;
     if (jj_scan_token(_SEMICOLON)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_12() {
+    if (jj_scan_token(_WHILE)) return true;
+    if (jj_scan_token(_LPAR)) return true;
+    if (jj_3R_19()) return true;
+    if (jj_scan_token(_RPAR)) return true;
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_23() {
+    if (jj_3R_13()) return true;
     return false;
   }
 
@@ -939,13 +1156,63 @@ public class GraceCompiler implements GraceCompilerConstants {
     return false;
   }
 
+  static private boolean jj_3_27() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_9() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_20()) {
+    jj_scanpos = xsp;
+    if (jj_3_21()) {
+    jj_scanpos = xsp;
+    if (jj_3_22()) {
+    jj_scanpos = xsp;
+    if (jj_3_23()) {
+    jj_scanpos = xsp;
+    if (jj_3_24()) {
+    jj_scanpos = xsp;
+    if (jj_3_25()) return true;
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  static private boolean jj_3_20() {
+    if (jj_3R_10()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_36() {
+    if (jj_scan_token(_LPAR)) return true;
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
   static private boolean jj_3_7() {
     if (jj_scan_token(_ID)) return true;
     return false;
   }
 
-  static private boolean jj_3R_9() {
-    if (jj_3R_13()) return true;
+  static private boolean jj_3_30() {
+    if (jj_scan_token(_LPAR)) return true;
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_20() {
+    if (jj_scan_token(_ELSE)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_27()) {
+    jj_scanpos = xsp;
+    if (jj_3_28()) return true;
+    }
     return false;
   }
 
@@ -961,15 +1228,31 @@ public class GraceCompiler implements GraceCompilerConstants {
     return false;
   }
 
-  static private boolean jj_3_30() {
-    if (jj_scan_token(_LPAR)) return true;
-    if (jj_3R_2()) return true;
+  static private boolean jj_3_17() {
+    if (jj_3R_8()) return true;
     return false;
   }
 
-  static private boolean jj_3_24() {
-    if (jj_scan_token(_LPAR)) return true;
-    if (jj_3R_10()) return true;
+  static private boolean jj_3_11() {
+    if (jj_scan_token(_COMMA)) return true;
+    if (jj_3R_6()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_7() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_17()) {
+    jj_scanpos = xsp;
+    if (jj_3_18()) return true;
+    }
+    xsp = jj_scanpos;
+    if (jj_3_19()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3_32() {
+    if (jj_scan_token(_RELAC)) return true;
     return false;
   }
 
@@ -998,7 +1281,7 @@ public class GraceCompiler implements GraceCompilerConstants {
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[30];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[37];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -1250,7 +1533,7 @@ public class GraceCompiler implements GraceCompilerConstants {
 
   static private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 37; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -1287,6 +1570,13 @@ public class GraceCompiler implements GraceCompilerConstants {
             case 27: jj_3_28(); break;
             case 28: jj_3_29(); break;
             case 29: jj_3_30(); break;
+            case 30: jj_3_31(); break;
+            case 31: jj_3_32(); break;
+            case 32: jj_3_33(); break;
+            case 33: jj_3_34(); break;
+            case 34: jj_3_35(); break;
+            case 35: jj_3_36(); break;
+            case 36: jj_3_37(); break;
           }
         }
         p = p.next;

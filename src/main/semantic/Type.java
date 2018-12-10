@@ -1,5 +1,5 @@
 package main.semantic;
 
 public enum Type{
-    INT, STRING, BOOL, VOID
+    INT, STRING, BOOL, VOID, WHILE, FOR
 }
