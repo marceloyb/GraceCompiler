@@ -9,13 +9,15 @@ package main;
 import java.util.Stack;
 import java.io.*;
 import main.semantic.*;
+import main.semantic.commands.*;
 import java.util.ArrayList;
 import java.util.List;
 import main.exceptions.*;
 
 public class GraceCompiler{
 
-  public static Stack<SymbolList> stack = new Stack<SymbolList>();
+  public static Stack<SymbolList> stackRoot = new Stack<SymbolList>();
+  public static int symbolListCount = 0;
 
   public static void main(String args[]){
     try{
@@ -23,7 +25,7 @@ public class GraceCompiler{
         parser.startParsing();
 
     } catch (Throwable error){
-        System.out.println("Syntax Error\n" + error.getMessage());
+        System.out.println("Syntax Error\n" + error.getLocalizedMessage());
     }
   }
 
@@ -37,6 +39,7 @@ SKIP :
 | "\t"
 | "\r"
 | <"//" (~["\r", "\n"])*>
+| "\n"
 }
 
 TOKEN :
@@ -65,26 +68,11 @@ TOKEN :
     |<_RBRACK: "]">
     |<_COMMA: ",">
     |<_SEMICOLON: ";">
-    |<_SUM: "+">
-    |<_SUB: "-">
-    |<_MULT: "*">
-    |<_DIV: "/">
-    |<_MOD: "%">
-    |<_EQUAL: "==">
-    |<_NEQUAL: "!=">
-    |<_GTHAN: ">">
-    |<_LTHAN: "<">
-    |<_GEQUAL: ">=">
-    |<_LEQUAL: "<=">
-    |<_LOG_OR: "||">
-    |<_LOG_AND: "&&">
-    |<_LOG_NOT: "!">
-    |<_ASSIGN: "=">
-    |<_SUM_ASSIGN: "+=">
-    |<_SUB_ASSIGN: "-=">
-    |<_MULT_ASSIGN: "*=">
-    |<_DIV_ASSIGN: "/=">
-    |<_MOD_ASSIGN: "%=">
+    |<_ARIT: "+" | "-" | "*" | "/" | "%">
+    |<_RELAC: ">" | ">=" | "<" | "<=">
+    |<_EQUALITY: "==" | "!=">
+    |<_LOGICAL: "||" | "&&" | "!">
+    |<_ASSIGN: ("=" | "+=" | "-=" | "*=" | "/=" | "%=")>
     |<_COND: "?">
     |<_COLON: ":">
 
@@ -112,110 +100,343 @@ void startParsing():
   double a;
 }
 {
-
-  VAR()
+  GLOBAL_START()
+  {
+    System.out.println ("Compilation Finished");
+  }
 }
 
-void MAIN_START():
+void GLOBAL_START():
 {
     SymbolList rootList = new SymbolList(null, null);
-    GraceCompiler.stack.push(rootList);
+    GraceCompiler.stackRoot.push(rootList);
+    List<Var> globalVar;
 }
-// declaração das variáveis da main
 {
+    MAIN_START(rootList)
+    {
+    }
+}
+
+void MAIN_START(SymbolList list):
+{
+    List<Var> mainVarList = new ArrayList<Var>();;
+    SymbolList mainSymbolList = new SymbolList(list, mainVarList);
+    SymbolList backup = GraceCompiler.stackRoot.peek();
+}
+{
+    mainVarList = VAR_SECTION(list) SUBPROGRAM(mainSymbolList)
     {
     }
 }
 
 // Variable declaration rule
-void VAR():
+// NO COMEÇO DO RETURN DO VAR ROOT EU ATUALIZO O VALOR DA LISTA
+// PARA O PRIMEIRO CASO ISSO É O CERTO POREM PARA O SEGUNDO PREJUDICA A ANALISE SEMANTICA
+List<Var> VAR_ROOT(SymbolList list):
 {
+    Integer counter = 0;
     Var var = new Var();
     Token typeToken;
     List<Var> listOfVar = new ArrayList<Var>();
 }
 {
-    <_VAR> listOfVar = VAR_ADD() <_COLON> typeToken = <_TYPE> <_SEMICOLON>
+    listOfVar = VAR_ADD(list) <_COLON> typeToken = <_TYPE> <_SEMICOLON>
     {
-
         Type type = Type.valueOf(typeToken.toString().toUpperCase());
-        General.updateVar(listOfVar, type);
-        for (Var v: listOfVar){
-            System.out.println(v.getId().toString());
-            System.out.println(v.getType().toString());
-        }
-    }
-}
+        System.out.println(type);
 
-List<Var> VAR_ADD():
-{
-    List<Var> listOfVar = new ArrayList<Var>();
-    Var var = new Var();
-    Token id;
-    String idString;
-    String val = new String();
-}
-{
-    (id = <_ID> (<_ASSIGN> (<_NUMBER> | <_CHAR>)*)*)
-    {
-        idString = id.toString();
-        var.setId(idString);
-        listOfVar.add(var);
+//        OLHA TODAS AS VARIAVEIS DA LISTA DE VARIAVEIS, VE SE ELA REFERENCIA ALGUMA QUE JA FOI DECLARADA
+//        SE ELA NAO REFERENCIA ATUALIZA O TIPO PRO TIPO QUE FOI PASSADO AQUI NO VAR_ROOT
+//        SE ELA REFERENCIA PASSA POR TODAS E VE SE O TIPO É IGUAL O DO TIPO PASSADO AQUI NO VAR ROOT
+//        SE NAO FOR É FALHA SEMANTICA
+        for (Var v: listOfVar){
+            if (v.getReferencia() == false){
+                v.setType(type);
+            }
+            else if (v.getReferencia() == true && !v.getType().equals(type)){
+                System.out.print("Semantic error: ");
+                System.out.println("the declaration of variable " + v.getId() + " is not valid, type error");
+            }
+        }
+
+        if (list.getVarList() != null){
+            for (Var v: listOfVar){
+                System.out.println(v.getId());
+                list.addToList(v);
+            }
+        }
+        else{
+            list.setVarList(listOfVar);
+        }
+        System.out.println("terminando var root");
         return listOfVar;
     }
 }
 
-void EXPRESSION():
+List<Var> VAR_ADD(SymbolList list):
 {
-    Content content = null;
+    List<Var> listOfVar = new ArrayList<Var>();
+    Var var = new Var();
+    Token id;
+    List<Var> recursiveListOfVar = null;
+    String idString;
+    String val = new String();
+    Type initialized = Type.VOID;
 }
 {
-    content = TERM()
+    id = <_ID> (<_ASSIGN> initialized = TERM(list))* (<_COMMA> recursiveListOfVar = VAR_ADD(list))?
+    {
+        idString = id.toString();
+        var.setType(initialized);
+
+        if (initialized != Type.VOID){
+            var.setReferencia(true);
+        }
+
+        var.setId(idString);
+        listOfVar.add(var);
+
+        if (recursiveListOfVar != null){
+            for(Var v: recursiveListOfVar){
+                listOfVar.add(v);
+            }
+        }
+        System.out.println("terminando var add");
+        return listOfVar;
+    }
 }
 
-Content TERM():
+List<Var> VAR_SECTION(SymbolList list):
 {
-    SymbolList list = GraceCompiler.stack.peek();
-    Integer numVal = null;
-    Boolean boolVal = null;
-    String strVal = null;
-    Content idObj = null;
+    List<Var> varList = null;
+    List<Var> recursiveVar = null;
+}
+{
+    (<_VAR> varList = VAR_ROOT(list) (recursiveVar = VAR_SECTION(list))?)
 
+    {
+        if (recursiveVar != null){
+            varList.addAll(recursiveVar);
+        }
+        System.out.println("saiu no var section");
+        return varList;
+    }
+}
+
+Type TERM(SymbolList list):
+{
+    Type returnVal = Type.VOID;
     Type type = null;
-    Content content = null;
     Token id = null, number = null, bool = null, str = null;
+    Var idObj = null;
 }
 {
     (number = <_NUMBER> | bool = <_BOOL> | str = <_STR> | id = <_ID>)
     {
         if (number != null){
-            numVal = Integer.valueOf(number.toString());
-            content.setContent(numVal);
-            content.setType(Type.INT);
+            returnVal = Type.INT;
         }
 
         if (bool != null){
-            boolVal = Boolean.valueOf(bool.toString());
-            content.setContent(boolVal);
-            content.setType(Type.BOOL);
+            returnVal = Type.BOOL;
         }
 
         if (str != null){
-            strVal = str.toString();
-            content.setContent(strVal);
-            content.setType(Type.STRING);
+            returnVal = Type.STRING;
         }
 
         if (id != null){
-            idObj = list.getValue(id.toString());
+
+            idObj = list.getVar(id.toString());
             if (idObj != null){
-                content = idObj;
+                returnVal = idObj.getType();
             }
             else{
+                System.out.println("Error on variable " + id.toString());
                 throw new UndeclaredId();
+
+            }
+        }
+        System.out.println("saindo term");
+        return returnVal;
+    }
+}
+
+SubProgram SUBPROGRAM(SymbolList list):
+{
+    SubProgram subProg = new SubProgram();
+    List<Var> parameterList = new ArrayList<Var>();
+    SymbolList subProgramList = new SymbolList(list, parameterList);
+    List<Var> subProgramVar = new ArrayList<Var>();
+    Token typeToken = null;
+    Token idToken = null;
+}
+{
+    (<_DEF> idToken = <_ID> <_LPAR> (parameterList = PARAMETER_LIST())? <_RPAR> (<_COLON> typeToken = <_TYPE>)? {
+        subProgramList.setVarList(parameterList);
+    }BLOCK(subProgramList)
+    )
+    {
+        subProg.setSubSymbolList(subProgramList);
+        subProg.setId(idToken.toString());
+        if (typeToken != null){
+            subProg.setType(General.updateType(typeToken));
+        }
+        return subProg;
+    }
+}
+
+List<Var> PARAMETER_LIST():
+{
+    List<Var> parameterList = new ArrayList<Var>();
+    List<Var> recursiveList = null;
+    Token typeToken;
+    Type returnType = Type.VOID;
+}
+{
+    parameterList = PARAMETER_ADD() <_COLON> typeToken = <_TYPE> (<_SEMICOLON> recursiveList = PARAMETER_LIST())?
+    {
+
+        returnType = General.updateType(typeToken);
+
+        for (var v: parameterList){
+            v.setType(returnType);
+        }
+
+        if (recursiveList != null){
+            for (var v: recursiveList){
+                parameterList.add(v);
             }
         }
 
-        return content;
+        for (var v: parameterList){
+            System.out.println(v.getId() + " " + v.getType());
+        }
+        System.out.println("saindo do parameter list");
+        return parameterList;
+    }
+}
+
+List<Var> PARAMETER_ADD():
+{
+    Var parameter = new Var();
+    List<Var> parameterList = new ArrayList<Var>();
+    List<Var> recursiveList = new ArrayList<Var>();
+    Token idToken;
+    boolean composed = false;
+}
+{
+    (idToken = <_ID> <_LBRACK> <_RBRACK> (<_COMMA> recursiveList = PARAMETER_ADD())? {composed = true;}
+    | idToken = <_ID> (<_COMMA> recursiveList = PARAMETER_ADD())?)
+    {
+        System.out.println("entrou no parameter add");
+        parameter.setId(idToken.toString());
+        parameter.setComposed(composed);
+        if (recursiveList != null){
+            for (var v: recursiveList){
+                parameterList.add(v);
+            }
+        }
+        parameterList.add(parameter);
+        System.out.println("saindo do parameter add");
+        return parameterList;
+    }
+}
+
+void BLOCK(SymbolList subProgramList):
+{
+    List<Var> subProgVarList = new ArrayList<Var>();
+}
+{
+    <_LBRACE> (subProgVarList = VAR_SECTION(subProgramList)
+    {
+        for (Var v: subProgVarList){
+            subProgramList.getVarList().add(v);
+        }
+    })? (STATEMENT(subProgramList))? <_RBRACE>
+    {
+        System.out.println("entrou no block");
+    }
+}
+
+void STATEMENT(SymbolList subProgramList):
+{
+}
+{
+    (SUBPROGRAM(subProgramList) | COMMAND(subProgramList)) (STATEMENT(subProgramList))?
+    {
+        System.out.println("entrou no steatement");
+    }
+}
+
+void COMMAND(SymbolList subProgramList):
+{
+    Type commandType = null;
+}
+{
+    commandType = ATTRIBUTION(subProgramList)
+    {
+    }
+}
+
+Type ATTRIBUTION(SymbolList subProgramList):
+{
+    Token idToken = null;
+    Type idType = Type.VOID;
+    Type assignType = Type.VOID;
+    Type assignTypeComposed = Type.VOID;
+    List<Var> varList = subProgramList.getVarList();
+}
+{
+    idToken = <_ID> (<_LBRACK> <_RBRACK>)? <_ASSIGN> assignType = EXPRESSION(subProgramList) <_SEMICOLON>
+    {
+        for(Var v: varList){
+            if (v.getId().equals(idToken.toString())){
+                idType = v.getType();
+            }
+        }
+        if (idType != Type.VOID && !idType.equals(assignType)){
+            System.out.println("Semantic error. Uncompatible type in attribution of variable " + idToken.toString());
+        }
+
+        return idType;
+    }
+}
+
+Type EXPRESSION(SymbolList subProgramList):
+{
+    Type expressionType = Type.VOID;
+    Operation operationValue = OperationType.VOID;
+}
+{
+    expressionType = TERM(subProgramList) | operationValue = OPERATION(subProgramList)
+    {
+        if (!operationValue.equals(OperationType.VOID)){
+            if(operationValue.equals(OperationType.ARIT)){
+                expressionType = Type.INT;
+            }
+            else expressionType = Type.BOOL;
+        }
+        return expressionType;
+    }
+}
+
+Operation OPERATION(SymbolList subProgramList):
+{
+    Type firstTerm = Type.VOID;
+    Type secondTerm = Type.VOID;
+    Token operationToken = null;
+    Token firstTermToken = null;
+    Token secondTermToken = null;
+}
+{
+    (firstTerm = TERM(subProgramList) | <_LPAR> firstTerm = OPERATION(subProgramList))
+    (operationToken = <_ARIT> | operationToken = <_RELAC> | operationToken = <_EQUALITY> | operationToken = <_LOGICAL>)
+    (secondTerm = TERM(subProgramList) | <_LPAR> secondTerm = TERM(subProgramList))
+    {
+        if(!firstTerm.equals(secondTerm)){
+            System.out.println("Semantic error. " + operationToken.toString() + " is impossible with " + firstTerm + " and " + secondTerm);
+        }
     }
 }

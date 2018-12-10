@@ -3,13 +3,15 @@ package main;
 import java.util.Stack;
 import java.io.*;
 import main.semantic.*;
+import main.semantic.commands.*;
 import java.util.ArrayList;
 import java.util.List;
 import main.exceptions.*;
 
 public class GraceCompiler implements GraceCompilerConstants {
 
-  public static Stack<SymbolList> stack = new Stack<SymbolList>();
+  public static Stack<SymbolList> stackRoot = new Stack<SymbolList>();
+  public static int symbolListCount = 0;
 
   public static void main(String args[]){
     try{
@@ -17,45 +19,84 @@ public class GraceCompiler implements GraceCompilerConstants {
         parser.startParsing();
 
     } catch (Throwable error){
-        System.out.println("Syntax Error\u005cn" + error.getMessage());
+        System.out.println("Syntax Error\u005cn" + error.getLocalizedMessage());
     }
   }
 
   static final public void startParsing() throws ParseException {
   double a;
-    VAR();
+    GLOBAL_START();
+    System.out.println ("Compilation Finished");
   }
 
-  static final public void MAIN_START() throws ParseException {
+  static final public void GLOBAL_START() throws ParseException {
     SymbolList rootList = new SymbolList(null, null);
-    GraceCompiler.stack.push(rootList);
+    GraceCompiler.stackRoot.push(rootList);
+    List<Var> globalVar;
+    MAIN_START(rootList);
+
+  }
+
+  static final public void MAIN_START(SymbolList list) throws ParseException {
+    List<Var> mainVarList = new ArrayList<Var>();;
+    SymbolList mainSymbolList = new SymbolList(list, mainVarList);
+    SymbolList backup = GraceCompiler.stackRoot.peek();
+    mainVarList = VAR_SECTION(list);
+    SUBPROGRAM(mainSymbolList);
 
   }
 
 // Variable declaration rule
-  static final public void VAR() throws ParseException {
+// NO COMEÇO DO RETURN DO VAR ROOT EU ATUALIZO O VALOR DA LISTA
+// PARA O PRIMEIRO CASO ISSO É O CERTO POREM PARA O SEGUNDO PREJUDICA A ANALISE SEMANTICA
+  static final public List<Var> VAR_ROOT(SymbolList list) throws ParseException {
+    Integer counter = 0;
     Var var = new Var();
     Token typeToken;
     List<Var> listOfVar = new ArrayList<Var>();
-    jj_consume_token(_VAR);
-    listOfVar = VAR_ADD();
+    listOfVar = VAR_ADD(list);
     jj_consume_token(_COLON);
     typeToken = jj_consume_token(_TYPE);
     jj_consume_token(_SEMICOLON);
         Type type = Type.valueOf(typeToken.toString().toUpperCase());
-        General.updateVar(listOfVar, type);
+        System.out.println(type);
+
+//        OLHA TODAS AS VARIAVEIS DA LISTA DE VARIAVEIS, VE SE ELA REFERENCIA ALGUMA QUE JA FOI DECLARADA
+//        SE ELA NAO REFERENCIA ATUALIZA O TIPO PRO TIPO QUE FOI PASSADO AQUI NO VAR_ROOT
+//        SE ELA REFERENCIA PASSA POR TODAS E VE SE O TIPO É IGUAL O DO TIPO PASSADO AQUI NO VAR ROOT
+//        SE NAO FOR É FALHA SEMANTICA
         for (Var v: listOfVar){
-            System.out.println(v.getId().toString());
-            System.out.println(v.getType().toString());
+            if (v.getReferencia() == false){
+                v.setType(type);
+            }
+            else if (v.getReferencia() == true && !v.getType().equals(type)){
+                System.out.print("Semantic error: ");
+                System.out.println("the declaration of variable " + v.getId() + " is not valid, type error");
+            }
         }
+
+        if (list.getVarList() != null){
+            for (Var v: listOfVar){
+                System.out.println(v.getId());
+                list.addToList(v);
+            }
+        }
+        else{
+            list.setVarList(listOfVar);
+        }
+        System.out.println("terminando var root");
+        {if (true) return listOfVar;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public List<Var> VAR_ADD() throws ParseException {
+  static final public List<Var> VAR_ADD(SymbolList list) throws ParseException {
     List<Var> listOfVar = new ArrayList<Var>();
     Var var = new Var();
     Token id;
+    List<Var> recursiveListOfVar = null;
     String idString;
     String val = new String();
+    Type initialized = Type.VOID;
     id = jj_consume_token(_ID);
     label_1:
     while (true) {
@@ -65,87 +106,340 @@ public class GraceCompiler implements GraceCompilerConstants {
         break label_1;
       }
       jj_consume_token(_ASSIGN);
-      label_2:
-      while (true) {
-        if (jj_2_2(6)) {
-          ;
-        } else {
-          break label_2;
-        }
-        if (jj_2_3(6)) {
-          jj_consume_token(_NUMBER);
-        } else if (jj_2_4(6)) {
-          jj_consume_token(_CHAR);
-        } else {
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
+      initialized = TERM(list);
+    }
+    if (jj_2_2(6)) {
+      jj_consume_token(_COMMA);
+      recursiveListOfVar = VAR_ADD(list);
+    } else {
+      ;
     }
         idString = id.toString();
+        var.setType(initialized);
+
+        if (initialized != Type.VOID){
+            var.setReferencia(true);
+        }
+
         var.setId(idString);
         listOfVar.add(var);
+
+        if (recursiveListOfVar != null){
+            for(Var v: recursiveListOfVar){
+                listOfVar.add(v);
+            }
+        }
+        System.out.println("terminando var add");
         {if (true) return listOfVar;}
     throw new Error("Missing return statement in function");
   }
 
-  static final public void EXPRESSION() throws ParseException {
-    Content content = null;
-    content = TERM();
+  static final public List<Var> VAR_SECTION(SymbolList list) throws ParseException {
+    List<Var> varList = null;
+    List<Var> recursiveVar = null;
+    jj_consume_token(_VAR);
+    varList = VAR_ROOT(list);
+    if (jj_2_3(6)) {
+      recursiveVar = VAR_SECTION(list);
+    } else {
+      ;
+    }
+        if (recursiveVar != null){
+            varList.addAll(recursiveVar);
+        }
+        System.out.println("saiu no var section");
+        {if (true) return varList;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public Content TERM() throws ParseException {
-    SymbolList list = GraceCompiler.stack.peek();
-    Integer numVal = null;
-    Boolean boolVal = null;
-    String strVal = null;
-    Content idObj = null;
-
+  static final public Type TERM(SymbolList list) throws ParseException {
+    Type returnVal = Type.VOID;
     Type type = null;
-    Content content = null;
     Token id = null, number = null, bool = null, str = null;
-    if (jj_2_5(6)) {
+    Var idObj = null;
+    if (jj_2_4(6)) {
       number = jj_consume_token(_NUMBER);
-    } else if (jj_2_6(6)) {
+    } else if (jj_2_5(6)) {
       bool = jj_consume_token(_BOOL);
-    } else if (jj_2_7(6)) {
+    } else if (jj_2_6(6)) {
       str = jj_consume_token(_STR);
-    } else if (jj_2_8(6)) {
+    } else if (jj_2_7(6)) {
       id = jj_consume_token(_ID);
     } else {
       jj_consume_token(-1);
       throw new ParseException();
     }
         if (number != null){
-            numVal = Integer.valueOf(number.toString());
-            content.setContent(numVal);
-            content.setType(Type.INT);
+            returnVal = Type.INT;
         }
 
         if (bool != null){
-            boolVal = Boolean.valueOf(bool.toString());
-            content.setContent(boolVal);
-            content.setType(Type.BOOL);
+            returnVal = Type.BOOL;
         }
 
         if (str != null){
-            strVal = str.toString();
-            content.setContent(strVal);
-            content.setType(Type.STRING);
+            returnVal = Type.STRING;
         }
 
         if (id != null){
-            idObj = list.getValue(id.toString());
+
+            idObj = list.getVar(id.toString());
             if (idObj != null){
-                content = idObj;
+                returnVal = idObj.getType();
             }
             else{
+                System.out.println("Error on variable " + id.toString());
                 {if (true) throw new UndeclaredId();}
+
+            }
+        }
+        System.out.println("saindo term");
+        {if (true) return returnVal;}
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public SubProgram SUBPROGRAM(SymbolList list) throws ParseException {
+    SubProgram subProg = new SubProgram();
+    List<Var> parameterList = new ArrayList<Var>();
+    SymbolList subProgramList = new SymbolList(list, parameterList);
+    List<Var> subProgramVar = new ArrayList<Var>();
+    Token typeToken = null;
+    Token idToken = null;
+    jj_consume_token(_DEF);
+    idToken = jj_consume_token(_ID);
+    jj_consume_token(_LPAR);
+    if (jj_2_8(6)) {
+      parameterList = PARAMETER_LIST();
+    } else {
+      ;
+    }
+    jj_consume_token(_RPAR);
+    if (jj_2_9(6)) {
+      jj_consume_token(_COLON);
+      typeToken = jj_consume_token(_TYPE);
+    } else {
+      ;
+    }
+        subProgramList.setVarList(parameterList);
+    BLOCK(subProgramList);
+        subProg.setSubSymbolList(subProgramList);
+        subProg.setId(idToken.toString());
+        if (typeToken != null){
+            subProg.setType(General.updateType(typeToken));
+        }
+        {if (true) return subProg;}
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public List<Var> PARAMETER_LIST() throws ParseException {
+    List<Var> parameterList = new ArrayList<Var>();
+    List<Var> recursiveList = null;
+    Token typeToken;
+    Type returnType = Type.VOID;
+    parameterList = PARAMETER_ADD();
+    jj_consume_token(_COLON);
+    typeToken = jj_consume_token(_TYPE);
+    if (jj_2_10(6)) {
+      jj_consume_token(_SEMICOLON);
+      recursiveList = PARAMETER_LIST();
+    } else {
+      ;
+    }
+        returnType = General.updateType(typeToken);
+
+        for (var v: parameterList){
+            v.setType(returnType);
+        }
+
+        if (recursiveList != null){
+            for (var v: recursiveList){
+                parameterList.add(v);
             }
         }
 
-        {if (true) return content;}
+        for (var v: parameterList){
+            System.out.println(v.getId() + " " + v.getType());
+        }
+        System.out.println("saindo do parameter list");
+        {if (true) return parameterList;}
     throw new Error("Missing return statement in function");
+  }
+
+  static final public List<Var> PARAMETER_ADD() throws ParseException {
+    Var parameter = new Var();
+    List<Var> parameterList = new ArrayList<Var>();
+    List<Var> recursiveList = new ArrayList<Var>();
+    Token idToken;
+    boolean composed = false;
+    if (jj_2_13(6)) {
+      idToken = jj_consume_token(_ID);
+      jj_consume_token(_LBRACK);
+      jj_consume_token(_RBRACK);
+      if (jj_2_11(6)) {
+        jj_consume_token(_COMMA);
+        recursiveList = PARAMETER_ADD();
+      } else {
+        ;
+      }
+                                                                                      composed = true;
+    } else if (jj_2_14(6)) {
+      idToken = jj_consume_token(_ID);
+      if (jj_2_12(6)) {
+        jj_consume_token(_COMMA);
+        recursiveList = PARAMETER_ADD();
+      } else {
+        ;
+      }
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+        System.out.println("entrou no parameter add");
+        parameter.setId(idToken.toString());
+        parameter.setComposed(composed);
+        if (recursiveList != null){
+            for (var v: recursiveList){
+                parameterList.add(v);
+            }
+        }
+        parameterList.add(parameter);
+        System.out.println("saindo do parameter add");
+        {if (true) return parameterList;}
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public void BLOCK(SymbolList subProgramList) throws ParseException {
+    List<Var> subProgVarList = new ArrayList<Var>();
+    jj_consume_token(_LBRACE);
+    if (jj_2_15(6)) {
+      subProgVarList = VAR_SECTION(subProgramList);
+        for (Var v: subProgVarList){
+            subProgramList.getVarList().add(v);
+        }
+    } else {
+      ;
+    }
+    if (jj_2_16(6)) {
+      STATEMENT(subProgramList);
+    } else {
+      ;
+    }
+    jj_consume_token(_RBRACE);
+        System.out.println("entrou no block");
+  }
+
+  static final public void STATEMENT(SymbolList subProgramList) throws ParseException {
+    if (jj_2_17(6)) {
+      SUBPROGRAM(subProgramList);
+    } else if (jj_2_18(6)) {
+      COMMAND(subProgramList);
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    if (jj_2_19(6)) {
+      STATEMENT(subProgramList);
+    } else {
+      ;
+    }
+        System.out.println("entrou no steatement");
+  }
+
+  static final public void COMMAND(SymbolList subProgramList) throws ParseException {
+    Type commandType = null;
+    commandType = ATTRIBUTION(subProgramList);
+
+  }
+
+  static final public Type ATTRIBUTION(SymbolList subProgramList) throws ParseException {
+    Token idToken = null;
+    Type idType = Type.VOID;
+    Type assignType = Type.VOID;
+    Type assignTypeComposed = Type.VOID;
+    List<Var> varList = subProgramList.getVarList();
+    idToken = jj_consume_token(_ID);
+    if (jj_2_20(6)) {
+      jj_consume_token(_LBRACK);
+      jj_consume_token(_RBRACK);
+    } else {
+      ;
+    }
+    jj_consume_token(_ASSIGN);
+    assignType = EXPRESSION(subProgramList);
+    jj_consume_token(_SEMICOLON);
+        for(Var v: varList){
+            if (v.getId().equals(idToken.toString())){
+                idType = v.getType();
+            }
+        }
+        if (idType != Type.VOID && !idType.equals(assignType)){
+            System.out.println("Semantic error. Uncompatible type in attribution of variable " + idToken.toString());
+        }
+
+        {if (true) return idType;}
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public Type EXPRESSION(SymbolList subProgramList) throws ParseException {
+    Type expressionType = Type.VOID;
+    Operation operationValue = OperationType.VOID;
+    if (jj_2_21(6)) {
+      expressionType = TERM(subProgramList);
+    } else if (jj_2_22(6)) {
+      operationValue = OPERATION(subProgramList);
+        if (!operationValue.equals(OperationType.VOID)){
+            if(operationValue.equals(OperationType.ARIT)){
+                expressionType = Type.INT;
+            }
+            else expressionType = Type.BOOL;
+        }
+        {if (true) return expressionType;}
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public Operation OPERATION(SymbolList subProgramList) throws ParseException {
+    Type firstTerm = Type.VOID;
+    Type secondTerm = Type.VOID;
+    Token operationToken = null;
+    Token firstTermToken = null;
+    Token secondTermToken = null;
+    if (jj_2_23(6)) {
+      firstTerm = TERM(subProgramList);
+    } else if (jj_2_24(6)) {
+      jj_consume_token(_LPAR);
+      firstTerm = OPERATION(subProgramList);
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    if (jj_2_25(6)) {
+      operationToken = jj_consume_token(_ARIT);
+    } else if (jj_2_26(6)) {
+      operationToken = jj_consume_token(_RELAC);
+    } else if (jj_2_27(6)) {
+      operationToken = jj_consume_token(_EQUALITY);
+    } else if (jj_2_28(6)) {
+      operationToken = jj_consume_token(_LOGICAL);
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    if (jj_2_29(6)) {
+      secondTerm = TERM(subProgramList);
+    } else if (jj_2_30(6)) {
+      jj_consume_token(_LPAR);
+      secondTerm = TERM(subProgramList);
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+        if(!firstTerm.equals(secondTerm)){
+            System.out.println("Semantic error. " + operationToken.toString() + " is impossible with " + firstTerm + " and " + secondTerm);
+        }
   }
 
   static private boolean jj_2_1(int xla) {
@@ -204,53 +498,478 @@ public class GraceCompiler implements GraceCompilerConstants {
     finally { jj_save(7, xla); }
   }
 
-  static private boolean jj_3_5() {
-    if (jj_scan_token(_NUMBER)) return true;
+  static private boolean jj_2_9(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_9(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(8, xla); }
+  }
+
+  static private boolean jj_2_10(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_10(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(9, xla); }
+  }
+
+  static private boolean jj_2_11(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_11(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(10, xla); }
+  }
+
+  static private boolean jj_2_12(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_12(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(11, xla); }
+  }
+
+  static private boolean jj_2_13(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_13(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(12, xla); }
+  }
+
+  static private boolean jj_2_14(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_14(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(13, xla); }
+  }
+
+  static private boolean jj_2_15(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_15(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(14, xla); }
+  }
+
+  static private boolean jj_2_16(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_16(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(15, xla); }
+  }
+
+  static private boolean jj_2_17(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_17(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(16, xla); }
+  }
+
+  static private boolean jj_2_18(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_18(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(17, xla); }
+  }
+
+  static private boolean jj_2_19(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_19(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(18, xla); }
+  }
+
+  static private boolean jj_2_20(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_20(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(19, xla); }
+  }
+
+  static private boolean jj_2_21(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_21(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(20, xla); }
+  }
+
+  static private boolean jj_2_22(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_22(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(21, xla); }
+  }
+
+  static private boolean jj_2_23(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_23(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(22, xla); }
+  }
+
+  static private boolean jj_2_24(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_24(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(23, xla); }
+  }
+
+  static private boolean jj_2_25(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_25(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(24, xla); }
+  }
+
+  static private boolean jj_2_26(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_26(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(25, xla); }
+  }
+
+  static private boolean jj_2_27(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_27(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(26, xla); }
+  }
+
+  static private boolean jj_2_28(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_28(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(27, xla); }
+  }
+
+  static private boolean jj_2_29(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_29(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(28, xla); }
+  }
+
+  static private boolean jj_2_30(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_30(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(29, xla); }
+  }
+
+  static private boolean jj_3R_8() {
+    if (jj_scan_token(_DEF)) return true;
+    if (jj_scan_token(_ID)) return true;
+    if (jj_scan_token(_LPAR)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_8()) jj_scanpos = xsp;
+    if (jj_scan_token(_RPAR)) return true;
+    xsp = jj_scanpos;
+    if (jj_3_9()) jj_scanpos = xsp;
+    if (jj_3R_12()) return true;
     return false;
   }
 
   static private boolean jj_3_6() {
-    if (jj_scan_token(_BOOL)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_8() {
-    if (jj_scan_token(_ID)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_7() {
     if (jj_scan_token(_STR)) return true;
     return false;
   }
 
-  static private boolean jj_3_4() {
-    if (jj_scan_token(_CHAR)) return true;
+  static private boolean jj_3_17() {
+    if (jj_3R_8()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_11() {
+    if (jj_scan_token(_COMMA)) return true;
+    if (jj_3R_6()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_26() {
+    if (jj_scan_token(_RELAC)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_7() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_17()) {
+    jj_scanpos = xsp;
+    if (jj_3_18()) return true;
+    }
+    xsp = jj_scanpos;
+    if (jj_3_19()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3_15() {
+    if (jj_3R_4()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_16() {
+    if (jj_3R_7()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_10() {
+    if (jj_scan_token(_SEMICOLON)) return true;
+    if (jj_3R_5()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_22() {
+    if (jj_3R_10()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_9() {
+    if (jj_scan_token(_COLON)) return true;
+    if (jj_scan_token(_TYPE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_12() {
+    if (jj_scan_token(_LBRACE)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_15()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3_16()) jj_scanpos = xsp;
+    if (jj_scan_token(_RBRACE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_5() {
+    if (jj_scan_token(_BOOL)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_12() {
+    if (jj_scan_token(_COMMA)) return true;
+    if (jj_3R_6()) return true;
     return false;
   }
 
   static private boolean jj_3_3() {
-    if (jj_scan_token(_NUMBER)) return true;
+    if (jj_3R_4()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_29() {
+    if (jj_3R_2()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_25() {
+    if (jj_scan_token(_ARIT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_23() {
+    if (jj_3R_2()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_10() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_23()) {
+    jj_scanpos = xsp;
+    if (jj_3_24()) return true;
+    }
+    xsp = jj_scanpos;
+    if (jj_3_25()) {
+    jj_scanpos = xsp;
+    if (jj_3_26()) {
+    jj_scanpos = xsp;
+    if (jj_3_27()) {
+    jj_scanpos = xsp;
+    if (jj_3_28()) return true;
+    }
+    }
+    }
+    xsp = jj_scanpos;
+    if (jj_3_29()) {
+    jj_scanpos = xsp;
+    if (jj_3_30()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_11() {
+    if (jj_3R_3()) return true;
+    if (jj_scan_token(_COLON)) return true;
+    if (jj_scan_token(_TYPE)) return true;
+    if (jj_scan_token(_SEMICOLON)) return true;
     return false;
   }
 
   static private boolean jj_3_2() {
+    if (jj_scan_token(_COMMA)) return true;
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_14() {
+    if (jj_scan_token(_ID)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_3()) {
+    if (jj_3_12()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3_28() {
+    if (jj_scan_token(_LOGICAL)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_4() {
+    if (jj_scan_token(_NUMBER)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_13() {
+    if (jj_scan_token(_ID)) return true;
+    if (jj_scan_token(_LBRACK)) return true;
+    if (jj_scan_token(_RBRACK)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_11()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3R_2() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_4()) {
     jj_scanpos = xsp;
-    if (jj_3_4()) return true;
+    if (jj_3_5()) {
+    jj_scanpos = xsp;
+    if (jj_3_6()) {
+    jj_scanpos = xsp;
+    if (jj_3_7()) return true;
     }
+    }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_6() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_13()) {
+    jj_scanpos = xsp;
+    if (jj_3_14()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3_19() {
+    if (jj_3R_7()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_14() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_21()) {
+    jj_scanpos = xsp;
+    if (jj_3_22()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3_21() {
+    if (jj_3R_2()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_20() {
+    if (jj_scan_token(_LBRACK)) return true;
+    if (jj_scan_token(_RBRACK)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_4() {
+    if (jj_scan_token(_VAR)) return true;
+    if (jj_3R_11()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_3()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3_8() {
+    if (jj_3R_5()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_18() {
+    if (jj_3R_9()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_27() {
+    if (jj_scan_token(_EQUALITY)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_5() {
+    if (jj_3R_6()) return true;
+    if (jj_scan_token(_COLON)) return true;
+    if (jj_scan_token(_TYPE)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_10()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3R_13() {
+    if (jj_scan_token(_ID)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_20()) jj_scanpos = xsp;
+    if (jj_scan_token(_ASSIGN)) return true;
+    if (jj_3R_14()) return true;
+    if (jj_scan_token(_SEMICOLON)) return true;
     return false;
   }
 
   static private boolean jj_3_1() {
     if (jj_scan_token(_ASSIGN)) return true;
+    if (jj_3R_2()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_7() {
+    if (jj_scan_token(_ID)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_9() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_3() {
+    if (jj_scan_token(_ID)) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3_2()) { jj_scanpos = xsp; break; }
+      if (jj_3_1()) { jj_scanpos = xsp; break; }
     }
+    xsp = jj_scanpos;
+    if (jj_3_2()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3_30() {
+    if (jj_scan_token(_LPAR)) return true;
+    if (jj_3R_2()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_24() {
+    if (jj_scan_token(_LPAR)) return true;
+    if (jj_3R_10()) return true;
     return false;
   }
 
@@ -279,7 +998,7 @@ public class GraceCompiler implements GraceCompilerConstants {
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[8];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[30];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -487,7 +1206,7 @@ public class GraceCompiler implements GraceCompilerConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[52];
+    boolean[] la1tokens = new boolean[38];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -504,7 +1223,7 @@ public class GraceCompiler implements GraceCompilerConstants {
         }
       }
     }
-    for (int i = 0; i < 52; i++) {
+    for (int i = 0; i < 38; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -531,7 +1250,7 @@ public class GraceCompiler implements GraceCompilerConstants {
 
   static private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 30; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -546,6 +1265,28 @@ public class GraceCompiler implements GraceCompilerConstants {
             case 5: jj_3_6(); break;
             case 6: jj_3_7(); break;
             case 7: jj_3_8(); break;
+            case 8: jj_3_9(); break;
+            case 9: jj_3_10(); break;
+            case 10: jj_3_11(); break;
+            case 11: jj_3_12(); break;
+            case 12: jj_3_13(); break;
+            case 13: jj_3_14(); break;
+            case 14: jj_3_15(); break;
+            case 15: jj_3_16(); break;
+            case 16: jj_3_17(); break;
+            case 17: jj_3_18(); break;
+            case 18: jj_3_19(); break;
+            case 19: jj_3_20(); break;
+            case 20: jj_3_21(); break;
+            case 21: jj_3_22(); break;
+            case 22: jj_3_23(); break;
+            case 23: jj_3_24(); break;
+            case 24: jj_3_25(); break;
+            case 25: jj_3_26(); break;
+            case 26: jj_3_27(); break;
+            case 27: jj_3_28(); break;
+            case 28: jj_3_29(); break;
+            case 29: jj_3_30(); break;
           }
         }
         p = p.next;

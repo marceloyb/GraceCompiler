@@ -1,46 +1,45 @@
 package main.semantic;
 
-import main.exceptions.UndeclaredId;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SymbolList {
 
     private SymbolList parentList = null;
-    private List<Var> symbolList;
-//    private Map<Var, String> symbolList = new HashMap<>();
+    private List<Var> varList;
 
-    public Content getValue(String id){
-        Content value = null;
-        for(Var v: this.symbolList) {
-            if (v.getContent().getContent().toString().equals(id))
-                value = v.getContent();
-        }
 
-        return value;
+    public void addToList(Var var){
+        this.varList.add(var);
     }
 
-    public SymbolList(SymbolList parentList, List<Var> symbolList) {
+    public SymbolList(SymbolList parentList, List<Var> varList) {
         this.parentList = parentList;
-        this.symbolList = symbolList;
+        this.varList = varList;
+    }
+
+    public Var getVar (String id){
+        Var returnVal = null;
+        for (Var v: this.varList)
+            if (v.getId().equals(id))
+                returnVal = v;
+
+        return returnVal;
     }
 
     public SymbolList getParentList() {
-        return parentList;
+        return this.parentList;
     }
 
     public void setParentList(SymbolList parentList) {
         this.parentList = parentList;
     }
 
-    public List<Var> getSymbolList() {
-        return symbolList;
+    public List<Var> getVarList() {
+        return this.varList;
     }
 
-    public void setSymbolList(List<Var> symbolList) {
-        this.symbolList = symbolList;
+    public void setVarList(List<Var> varList) {
+        this.varList = varList;
     }
 
 }
