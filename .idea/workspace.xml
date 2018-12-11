@@ -3,22 +3,26 @@
   <component name="ChangeListManager">
     <list default="true" id="6d1ac2c5-f459-4a80-9fcb-d4d1e37f20f7" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/.input.swp" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/.input.swp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler$JJCalls.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler$JJCalls.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler$LookaheadSuccess.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler$LookaheadSuccess.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler.jj" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler.jj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompilerConstants.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompilerConstants.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompilerTokenManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompilerTokenManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/input" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/input" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/General.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/General.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/OperationType.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/OperationType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/SubProgram.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/SubProgram.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/SymbolList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/SymbolList.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/input1" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/input1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/commands/AttrCmd.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/commands/Command.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/.input.swp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/.input.swp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/GraceCompiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompiler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/GraceCompiler.jj" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompiler.jj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/GraceCompilerConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompilerConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/GraceCompilerTokenManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompilerTokenManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/input" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/input" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/semantic/General.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/semantic/General.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/semantic/OperationType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/semantic/OperationType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/semantic/SubProgram.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/semantic/SubProgram.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/semantic/SymbolList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/semantic/SymbolList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/input1" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/input1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/semantic/commands/AttrCmd.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/semantic/commands/Command.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,8 +49,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.jj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1335">
-              <caret line="574" column="45" lean-forward="true" selection-start-line="574" selection-start-column="45" selection-end-line="574" selection-end-column="83" />
+            <state relative-caret-position="270">
+              <caret line="723" column="291" selection-start-line="723" selection-start-column="291" selection-end-line="723" selection-end-column="291" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/semantic/Var.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="96">
+              <caret line="24" column="18" lean-forward="true" selection-start-line="24" selection-start-column="18" selection-end-line="24" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -54,8 +67,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/semantic/SymbolList.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="33" column="46" lean-forward="true" selection-start-line="32" selection-start-column="12" selection-end-line="33" selection-end-column="46" />
+            <state relative-caret-position="315">
+              <caret line="23" column="18" lean-forward="true" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
               <folding>
                 <element signature="e#1064#1065#0" expanded="true" />
                 <element signature="e#1164#1165#0" expanded="true" />
@@ -69,24 +82,21 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/semantic/Var.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="23" lean-forward="true" selection-start-line="23" selection-end-line="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
-              <caret line="422" column="25" selection-start-line="422" selection-start-column="25" selection-end-line="422" selection-end-column="25" />
+            <state relative-caret-position="75">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
               <folding>
-                <element signature="imports" expanded="true" />
                 <element signature="e#379#391#0" expanded="true" />
                 <element signature="e#1149#1161#0" expanded="true" />
-                <element signature="e#6570#6582#0" expanded="true" />
+                <element signature="e#52194#52195#0" expanded="true" />
+                <element signature="e#52230#52231#0" expanded="true" />
+                <element signature="e#52271#52272#0" expanded="true" />
+                <element signature="e#52307#52308#0" expanded="true" />
+                <element signature="e#52538#52539#0" expanded="true" />
+                <element signature="e#52567#52568#0" expanded="true" />
+                <element signature="e#53535#53536#0" expanded="true" />
+                <element signature="e#53566#53567#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -103,16 +113,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>_</find>
-      <find>system</find>
-      <find>expression</find>
-      <find>initialize</find>
-      <find>var_root</find>
-      <find>getSymbolList</find>
-      <find>getVarList()</find>
-      <find>setSymbolList</find>
-      <find>saindo term</find>
-      <find>BLOCK(</find>
       <find>System.out</find>
       <find>Type of var</find>
       <find>RETURN()</find>
@@ -130,6 +130,19 @@
       <find>Variable(</find>
       <find>steate</find>
       <find>&lt;_ID</find>
+      <find>ta confuso</find>
+      <find>trabal</find>
+      <find>monsagrada</find>
+      <find>&lt;_LBRACK</find>
+      <find>READ_CMD</find>
+      <find>&lt;_WH</find>
+      <find>WHILE(</find>
+      <find>seman</find>
+      <find>monsagrad</find>
+      <find>merrda</find>
+      <find>&lt;_WHILE</find>
+      <find>&lt;_ARIT</find>
+      <find>FOR</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -221,7 +234,7 @@
               <item name="GraceCompiler" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="semantic" type="462c0819:PsiDirectoryNode" />
+              <item name="exceptions" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="GraceCompiler" type="b2602c69:ProjectViewProjectNode" />
@@ -229,7 +242,6 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="semantic" type="462c0819:PsiDirectoryNode" />
-              <item name="commands" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="GraceCompiler" type="b2602c69:ProjectViewProjectNode" />
@@ -244,7 +256,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544496089514" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544507985923" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/input" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Project" />
@@ -325,7 +337,7 @@
       <workItem from="1543956542361" duration="9316000" />
       <workItem from="1544097949526" duration="8447000" />
       <workItem from="1544134770969" duration="4837000" />
-      <workItem from="1544209485120" duration="72759000" />
+      <workItem from="1544209485120" duration="84551000" />
     </task>
     <task id="LOCAL-00001" summary="asdsad">
       <created>1543529435841</created>
@@ -369,11 +381,18 @@
       <option name="project" value="LOCAL" />
       <updated>1544418028263</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="semantica quase pronta">
+      <created>1544496215951</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1544496215951</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="131955000" />
+    <option name="totallyTimeSpent" value="143747000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="-4" width="1366" height="772" extended-state="6" />
@@ -389,7 +408,7 @@
       <window_info anchor="bottom" id="Duplicate detector" weight="0.32917318" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32993197" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.36349455" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3447738" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39937598" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -452,6 +471,10 @@
     <MESSAGE value="symbol list design started" />
     <MESSAGE value="semantica quase pronta" />
     <option name="LAST_COMMIT_MESSAGE" value="semantica quase pronta" />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/syntactic/definitions.jj" />
@@ -525,19 +548,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="422" column="25" selection-start-line="422" selection-start-column="25" selection-end-line="422" selection-end-column="25" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#379#391#0" expanded="true" />
-            <element signature="e#1149#1161#0" expanded="true" />
-            <element signature="e#6570#6582#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/semantic/SubProgram.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
@@ -550,8 +560,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/semantic/SymbolList.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="33" column="46" lean-forward="true" selection-start-line="32" selection-start-column="12" selection-end-line="33" selection-end-column="46" />
+        <state relative-caret-position="315">
+          <caret line="23" column="18" lean-forward="true" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
           <folding>
             <element signature="e#1064#1065#0" expanded="true" />
             <element signature="e#1164#1165#0" expanded="true" />
@@ -565,15 +575,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/semantic/Var.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="23" lean-forward="true" selection-start-line="23" selection-end-line="23" />
+        <state relative-caret-position="96">
+          <caret line="24" column="18" lean-forward="true" selection-start-line="24" selection-start-column="18" selection-end-line="24" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+          <folding>
+            <element signature="e#379#391#0" expanded="true" />
+            <element signature="e#1149#1161#0" expanded="true" />
+            <element signature="e#52194#52195#0" expanded="true" />
+            <element signature="e#52230#52231#0" expanded="true" />
+            <element signature="e#52271#52272#0" expanded="true" />
+            <element signature="e#52307#52308#0" expanded="true" />
+            <element signature="e#52538#52539#0" expanded="true" />
+            <element signature="e#52567#52568#0" expanded="true" />
+            <element signature="e#53535#53536#0" expanded="true" />
+            <element signature="e#53566#53567#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.jj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1335">
-          <caret line="574" column="45" lean-forward="true" selection-start-line="574" selection-start-column="45" selection-end-line="574" selection-end-column="83" />
+        <state relative-caret-position="270">
+          <caret line="723" column="291" selection-start-line="723" selection-start-column="291" selection-end-line="723" selection-end-column="291" />
         </state>
       </provider>
     </entry>

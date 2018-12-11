@@ -74,6 +74,8 @@ public interface GraceCompilerConstants {
   int _ID = 36;
   /** RegularExpression Id. */
   int _CHAR = 37;
+  /** RegularExpression Id. */
+  int _SPECIAL_CHAR = 38;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -118,6 +120,7 @@ public interface GraceCompilerConstants {
     "\"return\"",
     "<_ID>",
     "<_CHAR>",
+    "<_SPECIAL_CHAR>",
   };
 
 }

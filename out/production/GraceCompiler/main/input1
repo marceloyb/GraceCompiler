@@ -8,13 +8,7 @@ def func(x[], y: int; z: string; w: bool): int{
 	var c = 4, d = 2, e: int;
 	var f = true: bool;
 	var o: string;
-	if(f){
-		e = c + f;
-	}
-	else{
-		e = c + d;
-	}
-	while(f){
+	while(c > d || f){
 		c = c + 2;
 		skip;
 	}

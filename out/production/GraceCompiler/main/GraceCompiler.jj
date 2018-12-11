@@ -1,5 +1,5 @@
 options{
-  LOOKAHEAD=6;
+  LOOKAHEAD=8;
   UNICODE_INPUT=true;
 }
 
@@ -9,7 +9,6 @@ package main;
 import java.util.Stack;
 import java.io.*;
 import main.semantic.*;
-import main.semantic.commands.*;
 import java.util.ArrayList;
 import java.util.List;
 import main.exceptions.*;
@@ -54,7 +53,8 @@ TOKEN :
 
     |<_BOOL: "true" | "false">
     |<_NUMBER: (["0"-"9"])+>
-    |<_STR: ["\""] (<_CHAR> | <_NUMBER> | " ")* ["\""]>
+    |<_STR: ["\""] (<_CHAR> | <_NUMBER> | " " | <_SPECIAL_CHAR>)* ["\""]>
+
 
 
 
@@ -91,6 +91,7 @@ TOKEN :
 
     | <_ID: <_CHAR> (<_CHAR> | <_NUMBER>)*>
     |<_CHAR: ["a"-"z"] | ["A" - "Z"] | ["_"]>
+    |<_SPECIAL_CHAR: "!" | ["#"-"~"] >
 
 
 }
@@ -134,36 +135,44 @@ void MAIN_START(SymbolList list):
     }
 }
 
-// Variable declaration rule
-// NO COMEÇO DO RETURN DO VAR ROOT EU ATUALIZO O VALOR DA LISTA
-// PARA O PRIMEIRO CASO ISSO É O CERTO POREM PARA O SEGUNDO PREJUDICA A ANALISE SEMANTICA
+
 List<Var> VAR_ROOT(SymbolList list):
 {
     Integer counter = 0;
     Var var = new Var();
     Token typeToken;
-    List<Var> listOfVar = new ArrayList<Var>();
+    List<Var> listOfVar = null;
+    Boolean isComposed = false;
 }
 {
     listOfVar = VAR_ADD(list) <_COLON> typeToken = <_TYPE> <_SEMICOLON>
     {
         Type type = Type.valueOf(typeToken.toString().toUpperCase());
         System.out.println(type);
+        System.out.println(listOfVar.get(0).getType());
+        System.out.println(listOfVar.get(0).isComposed());
 
-//        OLHA TODAS AS VARIAVEIS DA LISTA DE VARIAVEIS, VE SE ELA REFERENCIA ALGUMA QUE JA FOI DECLARADA
-//        SE ELA NAO REFERENCIA ATUALIZA O TIPO PRO TIPO QUE FOI PASSADO AQUI NO VAR_ROOT
-//        SE ELA REFERENCIA PASSA POR TODAS E VE SE O TIPO É IGUAL O DO TIPO PASSADO AQUI NO VAR ROOT
-//        SE NAO FOR É FALHA SEMANTICA
-        for (Var v: listOfVar){
-            if (v.getReferencia() == false){
-                v.setType(type);
+        if(listOfVar != null){
+            isComposed = listOfVar.get(0).isComposed();
+            if(isComposed.equals(false)){
+                for (Var v: listOfVar){
+                    if (v.getReferencia() == false){
+                        v.setType(type);
+                    }
+                    else if (v.getReferencia() == true && !v.getType().equals(type)){
+                        System.err.print("Semantic error: ");
+                        System.err.println("the declaration of variable " + v.getId() + " is not valid, type error");
+                    }
+                }
             }
-            else if (v.getReferencia() == true && !v.getType().equals(type)){
-                System.err.print("Semantic error: ");
-                System.err.println("the declaration of variable " + v.getId() + " is not valid, type error");
+            else{
+                for(Var v: listOfVar){
+                    if (!v.getType().equals(type)){
+                        System.err.println("Invalid declaration of Array variable: " + v.getId() + " Declared type and content of variable are different");
+                    }
+                }
             }
         }
-
         if (list.getVarList() != null){
             for (Var v: listOfVar){
                 System.out.println(v.getId());
@@ -187,30 +196,65 @@ List<Var> VAR_ADD(SymbolList list):
     String idString;
     String val = new String();
     Type initialized = Type.VOID;
+    Boolean isArray = false;
+
+    Type arraySize = Type.VOID;
+    List<Type> listOfType = null;
+    Type testType = Type.VOID;
 }
 {
-    id = <_ID> (<_ASSIGN> initialized = TERM(list))* (<_COMMA> recursiveListOfVar = VAR_ADD(list))?
+    (id = <_ID> <_LBRACK> arraySize = EXPRESSION(list) <_RBRACK> {isArray = true;}(<_ASSIGN> listOfType = ARRAY_INIT(list))? (<_COMMA> recursiveListOfVar = VAR_ADD(list))?
+    | id = <_ID> (<_ASSIGN> initialized = TERM(list))* (<_COMMA> recursiveListOfVar = VAR_ADD(list))?)
     {
         idString = id.toString();
-        var.setType(initialized);
-        System.out.println(idString);
-
-        if (initialized != Type.VOID){
-            var.setReferencia(true);
-        }
-
         var.setId(idString);
-        listOfVar.add(var);
-
         if (recursiveListOfVar != null){
             for(Var v: recursiveListOfVar){
                 listOfVar.add(v);
             }
         }
-        System.out.println("terminando var add");
+
+        if (isArray.equals(false)){
+            var.setType(initialized);
+            System.out.println(idString);
+            if (initialized != Type.VOID){
+                var.setReferencia(true);
+            }
+            System.out.println("terminando var add");
+        }
+        else{
+            var.setComposed(true);
+            if(arraySize != Type.INT){
+                System.err.println("Error in declaration of array " + id.toString() + "; Array size must be of INT type");
+            }
+            if(listOfType != null){
+                testType = listOfType.get(0);
+                for(Type t: listOfType){
+                    if (testType != t){
+                        System.err.println("Error in declaration of array \"" + idString + "\": different types found in initialization");
+                    }
+                }
+                var.setType(testType);
+            }
+        }
+        listOfVar.add(var);
         return listOfVar;
     }
 }
+
+List<Type> ARRAY_INIT(SymbolList list):
+{
+    List<Type> initList = new ArrayList<Type>();
+    Type expression = Type.VOID;
+}
+{
+    <_LBRACE> (expression = EXPRESSION(list) {initList.add(expression);}
+     (<_COMMA> expression = EXPRESSION(list) {initList.add(expression);})*)? <_RBRACE>
+    {
+        return initList;
+    }
+}
+
 
 List<Var> VAR_SECTION(SymbolList list):
 {
@@ -223,12 +267,13 @@ List<Var> VAR_SECTION(SymbolList list):
     {
         if (recursiveVar != null){
             varList.addAll(recursiveVar);
-            System.out.println("VARIAVEL RECUSIVA");
         }
         System.out.println("saiu no var section");
         return varList;
     }
 }
+
+
 
 Type TERM(SymbolList list):
 {
@@ -383,7 +428,7 @@ void STATEMENT(SymbolList subProgramList, Type blockType):
 {
 }
 {
-    {System.out.println("monsagrada");} (SUBPROGRAM(subProgramList) | COMMAND(subProgramList, blockType)) (STATEMENT(subProgramList, blockType))?
+     (SUBPROGRAM(subProgramList) | {System.out.println("monsagrada");}  COMMAND(subProgramList, blockType)) (STATEMENT(subProgramList, blockType))?
     {
         System.out.println("entrou no steatement");
     }
@@ -391,12 +436,12 @@ void STATEMENT(SymbolList subProgramList, Type blockType):
 
 void COMMAND(SymbolList subProgramList, Type blockType):
 {
-    Type commandType = null;
+    Type commandType = Type.VOID;
 }
 {
     commandType = ATTRIBUTION(subProgramList) | commandType = IF(subProgramList) | commandType = WHILE(subProgramList)
     | SKIP_CMD(subProgramList, blockType) | STOP_CMD(subProgramList, blockType) | RETURN(subProgramList, blockType)
-    | commandType = FUNCALL(subProgramList) | commandType = FOR(subProgramList)
+    | commandType = FUNCALL(subProgramList) | commandType = FOR(subProgramList) | READ_CMD(subProgramList) | WRITE_CMD(subProgramList)
     {
     }
 }
@@ -415,8 +460,18 @@ void READ_CMD(SymbolList subProgramList):
             }
         }
         if (var == null){
-            System.err.println("Semanctic error: Trying to read an undeclared variable");
+            System.err.println("Semantic error: Trying to read an undeclared variable");
         }
+    }
+}
+
+void WRITE_CMD(SymbolList subProgramList):
+{
+    Type writing = Type.VOID;
+}
+{
+    <_WRITE> writing = EXPRESSION(subProgramList) (<_COMMA> writing = EXPRESSION(subProgramList))* <_SEMICOLON>
+    {
     }
 }
 
@@ -525,20 +580,12 @@ Type FUNCALL(SymbolList subProgramList):
         else{
             System.err.println("Syntactic error: Not declared SubProgram");
         }
-
-        for(Type t: parameterList){
-            System.out.println("na chamada " + t);
-        }
-
-        for(Var v: funCalled.getParameterList()){
-            System.out.println("na declaraçao " + v.getType());
-        }
         for(int i = 0; i < parameterList.size(); i++){
             if(parameterList.get(i) != funCalled.getParameterList().get(i).getType()){
                 System.err.println("Error calling subprogram: Parameter " + (i+1) + " of different type");
             }
         }
-        return parameter;
+        return funCalled.getType();
     }
 }
 
@@ -572,12 +619,14 @@ Type ATTRIBUTION(SymbolList subProgramList):
 }
 {
     var = VARIABLE(subProgramList) (<_LBRACK> <_RBRACK>)? <_ASSIGN>
-    (assignType = EXPRESSION(subProgramList) ) (<_SEMICOLON>)?
+    (assignType = FUNCALL(subProgramList) | assignType = EXPRESSION(subProgramList)) (<_SEMICOLON>)?
+//
     {
+        System.out.println(var.getType());
         if (var.getType() != Type.VOID && !var.getType().equals(assignType)){
-            System.err.println("Semantic error. Uncompatible type in attribution of variable " + idToken.toString());
+            System.err.println("Semantic error. Uncompatible type in attribution of variable " + var.getId().toString());
         }
-
+        System.out.println(assignType);
         return var.getType();
     }
 }
@@ -614,7 +663,7 @@ Type WHILE(SymbolList subProgramList):
     Type testType = Type.VOID;
 }
 {
-    <_WHILE> <_LPAR> testType = EXPRESSION(subProgramList) <_RPAR> BLOCK(subProgramList, Type.WHILE)
+    {System.out.println("monsagrada");} <_WHILE> {System.out.println("monsagrada");} <_LPAR> testType = EXPRESSION(subProgramList) <_RPAR> BLOCK(subProgramList, Type.WHILE)
     {
         return testType;
     }
@@ -643,7 +692,7 @@ Type EXPRESSION(SymbolList subProgramList):
     OperationType operationValue = OperationType.VOID;
 }
 {
-    (operationValue = OPERATION(subProgramList) | expressionType = FUNCALL(subProgramList))
+    operationValue = OPERATION(subProgramList)
     {
         if (!operationValue.equals(OperationType.VOID)){
             if(operationValue.equals(OperationType.ARIT)){
@@ -670,9 +719,8 @@ OperationType OPERATION(SymbolList subProgramList):
     Token secondTermToken = null;
 }
 {
-    (firstTerm = TERM(subProgramList) | <_LPAR> firstTermOp = OPERATION(subProgramList))
-    ((operationToken = <_ARIT> | operationToken = <_RELAC> | operationToken = <_EQUALITY> | operationToken = <_LOGICAL>)
-    (secondTerm = TERM(subProgramList) | <_LPAR> secondTermOp = OPERATION(subProgramList)))?
+    (firstTerm = TERM(subProgramList) | <_LPAR> firstTermOp = OPERATION(subProgramList) <_RPAR>) (operationToken = <_ARIT> | operationToken = <_RELAC> | operationToken = <_EQUALITY> | operationToken = <_LOGICAL>) (secondTerm = TERM(subProgramList) | secondTermOp = OPERATION(subProgramList))
+    | (firstTerm = TERM(subProgramList) | <_LPAR> firstTermOp = OPERATION(subProgramList) <_RPAR>) (operationToken = <_ARIT> | operationToken = <_RELAC> | operationToken = <_EQUALITY> | operationToken = <_LOGICAL>) <_LPAR> (secondTerm = TERM(subProgramList) | secondTermOp = OPERATION(subProgramList)) <_RPAR>
     {
         if(operationToken != null){
             if (!firstTermOp.equals(OperationType.VOID)){
