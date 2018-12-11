@@ -1,0 +1,58 @@
+var v[10]: int;
+
+
+def bubblesort(v1[]: int; n: int) {
+    var i=0, j, o = (1 + 2): int;
+    var trocou = true: bool;
+
+    i = n;
+    i = v1;
+
+    j = 1 + 2 + 3;
+
+    while (j > 2) {
+        trocou = false;
+        for (j=0; j < 1 + 2 + 3 + (2); j+=1) {
+            if (v1[j] > v[j+1]) {
+                var aux = v1[j]: int;
+                v1[j] = v1[j+1];
+                v1[j+1] = aux;
+                trocou = true;
+            }
+
+            skip;
+        }
+        i += 1;
+    }
+
+}
+
+def main(): int {
+    var i, j: int;
+
+    if (2 > 3 + 3) {
+        write "Blablabla";
+    } else if (false) {
+        write "Blaabla";
+    } else {
+        write "Blalalala";
+    }
+
+    write "Digite os valores do arranjo:\n";
+
+    for (i=0; i<10; i+=1) {
+        write "A[", i, "] = ";
+        read v[i];
+    }
+
+    bubblesort(v, 10);
+
+    write "Arranjo ordenado:\nA = ";
+
+    for (i=0; i<10; i+=1) {
+        write v[i], " ";
+    }
+
+    return 3 + 2 * 1 + 2;
+
+}
