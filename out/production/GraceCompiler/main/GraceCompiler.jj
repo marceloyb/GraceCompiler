@@ -1,5 +1,5 @@
 options{
-  LOOKAHEAD=8;
+  LOOKAHEAD=6;
   UNICODE_INPUT=true;
 }
 
@@ -25,7 +25,7 @@ public class GraceCompiler{
         parser.startParsing();
 
     } catch (Throwable error){
-        System.out.println("Syntax Error\n" + error.getLocalizedMessage());
+        System.err.println("Syntax Error\n" + error.getLocalizedMessage());
     }
   }
 
@@ -110,10 +110,11 @@ void GLOBAL_START():
 {
     SymbolList rootList = new SymbolList(null, null);
     GraceCompiler.stackRoot.push(rootList);
-    List<Var> globalVarList = new ArrayList<Var>();;
+    List<Var> globalVarList = new ArrayList<Var>();
+    List<SubProgram> globalSubList = new ArrayList<SubProgram>();
 }
 {
-    globalVarList = VAR_SECTION(rootList) {rootList.setVarList(globalVarList);} MAIN_START(rootList)
+    globalVarList = VAR_SECTION(rootList) {rootList.setVarList(globalVarList); rootList.setSubProgramList(globalSubList);} MAIN_START(rootList)
     {
     }
 }
@@ -125,8 +126,11 @@ void MAIN_START(SymbolList list):
     SymbolList backup = GraceCompiler.stackRoot.peek();
 }
 {
-    SUBPROGRAM(list)
+    (SUBPROGRAM(list))*
     {
+        for(SubProgram s: list.getSubProgramList()){
+            System.out.println(s.getId());
+        }
     }
 }
 
@@ -155,8 +159,8 @@ List<Var> VAR_ROOT(SymbolList list):
                 v.setType(type);
             }
             else if (v.getReferencia() == true && !v.getType().equals(type)){
-                System.out.print("Semantic error: ");
-                System.out.println("the declaration of variable " + v.getId() + " is not valid, type error");
+                System.err.print("Semantic error: ");
+                System.err.println("the declaration of variable " + v.getId() + " is not valid, type error");
             }
         }
 
@@ -230,11 +234,12 @@ Type TERM(SymbolList list):
 {
     Type returnVal = Type.VOID;
     Type type = null;
+    Var var = null;
     Token id = null, number = null, bool = null, str = null;
     Var idObj = null;
 }
 {
-    (number = <_NUMBER> | bool = <_BOOL> | str = <_STR> | id = <_ID>)
+    (number = <_NUMBER> | bool = <_BOOL> | str = <_STR> | var = VARIABLE(list))
     {
         if (number != null){
             returnVal = Type.INT;
@@ -248,17 +253,8 @@ Type TERM(SymbolList list):
             returnVal = Type.STRING;
         }
 
-        if (id != null){
-
-            idObj = list.getVar(id.toString());
-            if (idObj != null){
-                returnVal = idObj.getType();
-            }
-            else{
-                System.out.println("Error on variable \"" + id.toString() + "\"");
-                throw new UndeclaredId();
-
-            }
+        if (var != null){
+            returnVal = var.getType();
         }
         System.out.println("saindo term");
         return returnVal;
@@ -268,31 +264,46 @@ Type TERM(SymbolList list):
 SubProgram SUBPROGRAM(SymbolList list):
 {
     SubProgram subProg = new SubProgram();
+    List<SubProgram> listOfSubProg = new ArrayList<SubProgram>();
     List<Var> parameterList = new ArrayList<Var>();
     SymbolList subProgramList = new SymbolList(list, parameterList);
     List<Var> subProgramVar = new ArrayList<Var>();
     Token typeToken = null;
     Token idToken = null;
     Type subProgType = Type.VOID;
+
+
 }
 {
     (<_DEF> idToken = <_ID> <_LPAR> (parameterList = PARAMETER_LIST())? <_RPAR> (<_COLON> typeToken = <_TYPE>)? {
     {
-        if (typeToken != null)
+        if (typeToken != null){
             subProgType = General.updateType(typeToken);
+        }
+//      seta as listas de variaveis declaradas como parametro e as variaveis do escopo
+        subProgramVar.addAll(parameterList);
+        subProg.setVarList(subProgramVar);
+        subProg.setParameterList(parameterList);
+//        Lista de variáveis do subprograma = variaveis do parametro + da lista pai
         for (Var v: list.getVarList()){
-            parameterList.add(v);
+            subProg.getVarList().add(v);
         }
     }
-        subProgramList.setVarList(parameterList);
+    subProgramVar.addAll(subProg.getVarList());
+    subProgramList.setVarList(subProg.getVarList());
     }BLOCK(subProgramList, subProgType)
     )
     {
         subProg.setSubSymbolList(subProgramList);
         subProg.setId(idToken.toString());
-        if (typeToken != null){
-            subProg.setType(General.updateType(typeToken));
+        if(list.getSubProgramList() != null){
+            list.getSubProgramList().add(subProg);
         }
+        else{
+            listOfSubProg.add(subProg);
+            list.setSubProgramList(listOfSubProg);
+        }
+        subProg.setType(subProgType);
         return subProg;
     }
 }
@@ -340,7 +351,6 @@ List<Var> PARAMETER_ADD():
     (idToken = <_ID> <_LBRACK> <_RBRACK> (<_COMMA> recursiveList = PARAMETER_ADD())? {composed = true;}
     | idToken = <_ID> (<_COMMA> recursiveList = PARAMETER_ADD())?)
     {
-        System.out.println("entrou no parameter add");
         parameter.setId(idToken.toString());
         parameter.setComposed(composed);
         if (recursiveList != null){
@@ -349,7 +359,6 @@ List<Var> PARAMETER_ADD():
             }
         }
         parameterList.add(parameter);
-        System.out.println("saindo do parameter add");
         return parameterList;
     }
 }
@@ -364,7 +373,7 @@ void BLOCK(SymbolList subProgramList, Type blockType):
         for (Var v: subProgVarList){
             subProgramList.getVarList().add(v);
         }
-    })? (STATEMENT(subProgramList, blockType))? <_RBRACE>
+    })? {System.out.println("monsagrad");} (STATEMENT(subProgramList, blockType))?{System.out.println("trabalho fdp");} <_RBRACE>
     {
         System.out.println("entrou no block");
     }
@@ -374,7 +383,7 @@ void STATEMENT(SymbolList subProgramList, Type blockType):
 {
 }
 {
-    (SUBPROGRAM(subProgramList) | COMMAND(subProgramList, blockType)) (STATEMENT(subProgramList, blockType))?
+    {System.out.println("monsagrada");} (SUBPROGRAM(subProgramList) | COMMAND(subProgramList, blockType)) (STATEMENT(subProgramList, blockType))?
     {
         System.out.println("entrou no steatement");
     }
@@ -387,9 +396,66 @@ void COMMAND(SymbolList subProgramList, Type blockType):
 {
     commandType = ATTRIBUTION(subProgramList) | commandType = IF(subProgramList) | commandType = WHILE(subProgramList)
     | SKIP_CMD(subProgramList, blockType) | STOP_CMD(subProgramList, blockType) | RETURN(subProgramList, blockType)
+    | commandType = FUNCALL(subProgramList) | commandType = FOR(subProgramList)
     {
     }
 }
+
+void READ_CMD(SymbolList subProgramList):
+{
+    Token idToken = null;
+    Var var = null;
+}
+{
+    <_READ> var = VARIABLE(subProgramList) <_SEMICOLON>
+    {
+        for(Var v: subProgramList.getVarList()){
+            if(v.getId().equals(idToken.toString())){
+                 var = v;
+            }
+        }
+        if (var == null){
+            System.err.println("Semanctic error: Trying to read an undeclared variable");
+        }
+    }
+}
+
+Var VARIABLE(SymbolList subProgramList):
+{
+    Token idToken = null;
+    Var var = new Var();
+    SubProgram sub = new SubProgram();
+}
+{
+    idToken = <_ID>
+    {
+        var = subProgramList.getVar(idToken.toString());
+        if (var == null){
+            sub = subProgramList.getSubProgram(idToken.toString());
+        }
+
+        if (subProgramList.getSubProgramList() != null){
+            for (SubProgram s: subProgramList.getSubProgramList()){
+                if (s.getId().equals(idToken.toString())){
+                    var = s;
+                }
+            }
+        }
+        else if (GraceCompiler.stackRoot.peek().getSubProgramList() != null){
+            for (SubProgram s: GraceCompiler.stackRoot.peek().getSubProgramList()){
+                if (s.getId().equals(idToken.toString())){
+                    var = s;
+                }
+            }
+        }
+        else{
+            System.err.println("Syntactic error: Not declared SubProgram");
+        }
+
+        return var;
+    }
+}
+
 
 void RETURN(SymbolList subProgramList, Type blockType):
 {
@@ -400,7 +466,7 @@ void RETURN(SymbolList subProgramList, Type blockType):
     returnToken = <_RETURN> blockTypeVal = EXPRESSION(subProgramList) <_SEMICOLON>
     {
         if(blockType != Type.VOID && !blockTypeVal.equals(blockType)){
-            System.out.println("Semantic error: Block RETURN type is not the same of the declaration");
+            System.err.println("Semantic error: Block RETURN type is not the same of the declaration");
         }
     }
 }
@@ -412,7 +478,7 @@ void SKIP_CMD(SymbolList subProgramList, Type blockType):
     <_SKIP> <_SEMICOLON>
     {
         if (blockType != Type.WHILE && blockType != Type.FOR){
-            System.out.println("Syntactic error: Bad use of SKIP command");
+            System.err.println("Syntactic error: Bad use of SKIP command");
         }
     }
 }
@@ -424,34 +490,98 @@ void STOP_CMD(SymbolList subProgramList, Type blockType):
     <_STOP> <_SEMICOLON>
     {
         if (blockType != Type.WHILE && blockType != Type.FOR){
-            System.out.println("Syntactic error: Bad use of STOP command");
+            System.err.println("Syntactic error: Bad use of STOP command");
         }
+    }
+}
+
+Type FUNCALL(SymbolList subProgramList):
+{
+    Token idToken = null;
+    Type parameter = Type.VOID;
+    Type recursiveParameter = Type.VOID;
+    List<Type> parameterList = new ArrayList<Type>();
+    List<Var> parameterVarList = new ArrayList<Var>();
+    SubProgram funCalled = null;
+    Var var = null;
+}
+{
+    var = VARIABLE(subProgramList) <_LPAR> (parameterList = FUN_PARAM(subProgramList))? <_RPAR> <_SEMICOLON>
+    {
+        if (subProgramList.getSubProgramList() != null){
+            for (SubProgram s: subProgramList.getSubProgramList()){
+                if (s.getId().equals(var.getId().toString())){
+                    funCalled = s;
+                }
+            }
+        }
+        else if (GraceCompiler.stackRoot.peek().getSubProgramList() != null){
+            for (SubProgram s: GraceCompiler.stackRoot.peek().getSubProgramList()){
+                if (s.getId().equals(var.getId().toString())){
+                    funCalled = s;
+                }
+            }
+        }
+        else{
+            System.err.println("Syntactic error: Not declared SubProgram");
+        }
+
+        for(Type t: parameterList){
+            System.out.println("na chamada " + t);
+        }
+
+        for(Var v: funCalled.getParameterList()){
+            System.out.println("na declaraçao " + v.getType());
+        }
+        for(int i = 0; i < parameterList.size(); i++){
+            if(parameterList.get(i) != funCalled.getParameterList().get(i).getType()){
+                System.err.println("Error calling subprogram: Parameter " + (i+1) + " of different type");
+            }
+        }
+        return parameter;
+    }
+}
+
+List<Type> FUN_PARAM(SymbolList subProgramList):
+{
+    List<Type> parameterList = new ArrayList<Type>();
+    List<Type> recursiveParamList = new ArrayList<Type>();
+    Type parameter = Type.VOID;
+    Type recursiveParameter = Type.VOID;
+}
+{
+    parameter = EXPRESSION(subProgramList) (<_COMMA> recursiveParamList = FUN_PARAM(subProgramList))?
+    {
+        parameterList.add(parameter);
+        for (Type t: recursiveParamList){
+            if(t != Type.VOID)
+                parameterList.add(t);
+        }
+        return(parameterList);
     }
 }
 
 Type ATTRIBUTION(SymbolList subProgramList):
 {
     Token idToken = null;
+    Var var = new Var();
     Type idType = Type.VOID;
     Type assignType = Type.VOID;
     Type assignTypeComposed = Type.VOID;
     List<Var> varList = subProgramList.getVarList();
 }
 {
-    idToken = <_ID> (<_LBRACK> <_RBRACK>)? <_ASSIGN> assignType = EXPRESSION(subProgramList) <_SEMICOLON>
+    var = VARIABLE(subProgramList) (<_LBRACK> <_RBRACK>)? <_ASSIGN>
+    (assignType = EXPRESSION(subProgramList) ) (<_SEMICOLON>)?
     {
-        for(Var v: varList){
-            if (v.getId().equals(idToken.toString())){
-                idType = v.getType();
-            }
-        }
-        if (idType != Type.VOID && !idType.equals(assignType)){
-            System.out.println("Semantic error. Uncompatible type in attribution of variable " + idToken.toString());
+        if (var.getType() != Type.VOID && !var.getType().equals(assignType)){
+            System.err.println("Semantic error. Uncompatible type in attribution of variable " + idToken.toString());
         }
 
-        return idType;
+        return var.getType();
     }
 }
+
 
 Type IF(SymbolList subProgramList):
 {
@@ -462,7 +592,7 @@ Type IF(SymbolList subProgramList):
     <_IF> <_LPAR> testType = EXPRESSION(subProgramList) <_RPAR> BLOCK(subProgramList, Type.VOID) (elseType = ELSE(subProgramList))
     {
         if (testType != Type.BOOL){
-            System.out.println("Semantic error: Expression in IF command must be of BOOLEAN type");
+            System.err.println("Semantic error: Expression in IF command must be of BOOLEAN type");
         }
         return testType;
     }
@@ -490,19 +620,22 @@ Type WHILE(SymbolList subProgramList):
     }
 }
 
-//Type FOR(SymbolList subProgramList):
-//{
-//    Type atribType = Type.VOID;
-//    Type atribExpress = Type.VOID;
-//    Type atribPass = Type.VOID;
-//}
-//{
-//    <_FOR> <_LPAR> atribType = ATTRIBUTION(subProgramList) atribExpress = EXPRESSION(subProgramList) <_SEMICOLON>
-//    atribPass = ATTRIBUTION(subProgramList) BLOCK(subProgramList, Type.FOR)
-//    {
-//
-//    }
-//}
+Type FOR(SymbolList subProgramList):
+{
+    Type atribType = Type.VOID;
+    Type atribExpress = Type.VOID;
+    Type atribPass = Type.VOID;
+}
+{
+    <_FOR> <_LPAR> atribType = ATTRIBUTION(subProgramList) atribExpress = EXPRESSION(subProgramList) <_SEMICOLON>
+    atribPass = ATTRIBUTION(subProgramList) <_RPAR> BLOCK(subProgramList, Type.FOR)
+    {
+        if (atribExpress != Type.BOOL){
+            System.err.println("Error in FOR command: Test expression not a logic value");
+        }
+        return atribExpress;
+    }
+}
 
 Type EXPRESSION(SymbolList subProgramList):
 {
@@ -510,13 +643,16 @@ Type EXPRESSION(SymbolList subProgramList):
     OperationType operationValue = OperationType.VOID;
 }
 {
-    operationValue = OPERATION(subProgramList)
+    (operationValue = OPERATION(subProgramList) | expressionType = FUNCALL(subProgramList))
     {
         if (!operationValue.equals(OperationType.VOID)){
             if(operationValue.equals(OperationType.ARIT)){
                 expressionType = Type.INT;
             }
-            else expressionType = Type.BOOL;
+            else if(operationValue.equals(OperationType.STRING))
+                expressionType = Type.STRING;
+            else
+                expressionType = Type.BOOL;
         }
         return expressionType;
     }
@@ -554,7 +690,7 @@ OperationType OPERATION(SymbolList subProgramList):
             }
 
             if(!firstTerm.equals(secondTerm)){
-                System.out.println("Semantic error: " + operationToken.toString() + " is impossible with " + firstTerm + " and " + secondTerm);
+                System.err.println("Semantic error: " + operationToken.toString() + " is impossible with " + firstTerm + " and " + secondTerm);
             }
 
             opType = General.updateOperationType(operationToken);
@@ -563,7 +699,10 @@ OperationType OPERATION(SymbolList subProgramList):
             if(firstTerm.equals(Type.INT)){
                 opType = OperationType.ARIT;
             }
-            else{
+            else if (firstTerm.equals(Type.STRING)){
+                opType = OperationType.STRING;
+            }
+            else if (firstTerm.equals(Type.BOOL)){
                 opType = OperationType.LOGIC;
             }
         }

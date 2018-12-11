@@ -23,11 +23,11 @@ public class General {
             returnType = Type.STRING;
         }
 
-        else if (typeToken.toString().equals("boolean")){
+        else if (typeToken.toString().equals("bool")){
             returnType = Type.BOOL;
         }
         else{
-            System.out.println("Syntatic error unknown type of variable in parameters");
+            System.err.println("Syntatic error unknown type of variable in parameters");
         }
 
         return returnType;

@@ -1,19 +1,23 @@
 var a = 5: int;
 var b = true: bool;
 
-def teste(g: int; h: string; k: bool): int{
+def teste(g: int; h: string; k: bool){
 }
-
-def alo(): int{
-}
-
 
 def func(x[], y: int; z: string; w: bool): int{
 	var c = 4, d = 2, e: int;
 	var f = true: bool;
 	var o: string;
-	c = alo();
+	if(f){
+		e = c + f;
+	}
+	else{
+		e = c + d;
+	}
+	while(f){
+		c = c + 2;
+		skip;
+	}
+	teste(c, o, f);
+	return 1;
 }
-
-
-

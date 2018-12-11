@@ -5,7 +5,8 @@ import java.util.List;
 public class SymbolList {
 
     private SymbolList parentList = null;
-    private List<Var> varList;
+    private List<Var> varList = null;
+    private List<SubProgram> subProgramList = null;
 
 
     public void addToList(Var var){
@@ -26,6 +27,18 @@ public class SymbolList {
         return returnVal;
     }
 
+    public SubProgram getSubProgram (String id){
+        SubProgram returnSub = null;
+        if (subProgramList != null) {
+            for (SubProgram s : this.subProgramList) {
+                System.out.println(s.getId());
+                if (s.getId().equals(id))
+                    returnSub = s;
+            }
+        }
+        return returnSub;
+    }
+
     public SymbolList getParentList() {
         return this.parentList;
     }
@@ -42,4 +55,11 @@ public class SymbolList {
         this.varList = varList;
     }
 
+    public List<SubProgram> getSubProgramList() {
+        return subProgramList;
+    }
+
+    public void setSubProgramList(List<SubProgram> subProgramList) {
+        this.subProgramList = subProgramList;
+    }
 }
