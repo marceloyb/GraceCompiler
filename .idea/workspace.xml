@@ -3,26 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="6d1ac2c5-f459-4a80-9fcb-d4d1e37f20f7" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/META-INF/GraceCompiler.kotlin_module" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/.input.swp" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/.input.swp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler$JJCalls.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler$JJCalls.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler$LookaheadSuccess.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler$LookaheadSuccess.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler.jj" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompiler.jj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompilerConstants.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompilerConstants.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompilerTokenManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/GraceCompilerTokenManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/input" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/input" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/input1" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/GraceCompiler/main/input1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/commands/AttrCmd.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/GraceCompiler/main/semantic/commands/Command.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/.input.swp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/.input.swp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/GraceCompiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompiler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/GraceCompiler.jj" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompiler.jj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/GraceCompilerConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompilerConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/GraceCompilerTokenManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/GraceCompilerTokenManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/input" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/input" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/input1" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/input1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/semantic/commands/AttrCmd.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/semantic/commands/Command.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -49,8 +40,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.jj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="723" column="291" selection-start-line="723" selection-start-column="291" selection-end-line="723" selection-end-column="291" />
+            <state relative-caret-position="1714">
+              <caret line="576" column="4" selection-start-line="576" selection-start-column="4" selection-end-line="576" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -58,7 +49,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/semantic/Var.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="96">
+            <state relative-caret-position="198">
               <caret line="24" column="18" lean-forward="true" selection-start-line="24" selection-start-column="18" selection-end-line="24" selection-end-column="18" />
             </state>
           </provider>
@@ -67,14 +58,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/semantic/SymbolList.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="23" column="18" lean-forward="true" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
+            <state relative-caret-position="190">
+              <caret line="20" column="34" lean-forward="true" selection-start-line="20" selection-start-column="34" selection-end-line="20" selection-end-column="34" />
               <folding>
+                <element signature="e#1026#1027#0" expanded="true" />
                 <element signature="e#1064#1065#0" expanded="true" />
+                <element signature="e#1120#1121#0" expanded="true" />
                 <element signature="e#1164#1165#0" expanded="true" />
+                <element signature="e#1201#1202#0" expanded="true" />
                 <element signature="e#1236#1237#0" expanded="true" />
+                <element signature="e#1285#1286#0" expanded="true" />
                 <element signature="e#1323#1324#0" expanded="true" />
+                <element signature="e#1374#1375#0" expanded="true" />
                 <element signature="e#1411#1412#0" expanded="true" />
+                <element signature="e#1481#1482#0" expanded="true" />
                 <element signature="e#1533#1534#0" expanded="true" />
               </folding>
             </state>
@@ -82,21 +79,38 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/semantic/Type.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="22" lean-forward="true" selection-start-column="22" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/semantic/OperationType.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="3" column="55" lean-forward="true" selection-start-line="3" selection-start-column="55" selection-end-line="3" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" selection-start-line="5" selection-end-line="5" />
+            <state relative-caret-position="155">
+              <caret line="537" column="22" selection-start-line="537" selection-start-column="22" selection-end-line="537" selection-end-column="22" />
               <folding>
-                <element signature="e#379#391#0" expanded="true" />
-                <element signature="e#1149#1161#0" expanded="true" />
-                <element signature="e#52194#52195#0" expanded="true" />
-                <element signature="e#52230#52231#0" expanded="true" />
-                <element signature="e#52271#52272#0" expanded="true" />
-                <element signature="e#52307#52308#0" expanded="true" />
-                <element signature="e#52538#52539#0" expanded="true" />
-                <element signature="e#52567#52568#0" expanded="true" />
-                <element signature="e#53535#53536#0" expanded="true" />
-                <element signature="e#53566#53567#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#58316#58317#0" expanded="true" />
+                <element signature="e#58352#58353#0" expanded="true" />
+                <element signature="e#58393#58394#0" expanded="true" />
+                <element signature="e#58429#58430#0" expanded="true" />
+                <element signature="e#58660#58661#0" expanded="true" />
+                <element signature="e#58689#58690#0" expanded="true" />
+                <element signature="e#59657#59658#0" expanded="true" />
+                <element signature="e#59688#59689#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -113,36 +127,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>System.out</find>
-      <find>Type of var</find>
-      <find>RETURN()</find>
-      <find>subprogramvar</find>
-      <find>attribution</find>
-      <find>FOR(</find>
-      <find>TERM(</find>
-      <find>READ</find>
-      <find>term</find>
-      <find>VARIABLE(</find>
-      <find>VARIAB</find>
-      <find>read_</find>
-      <find>var_sect</find>
-      <find>state</find>
-      <find>Variable(</find>
-      <find>steate</find>
-      <find>&lt;_ID</find>
-      <find>ta confuso</find>
-      <find>trabal</find>
-      <find>monsagrada</find>
-      <find>&lt;_LBRACK</find>
-      <find>READ_CMD</find>
-      <find>&lt;_WH</find>
-      <find>WHILE(</find>
       <find>seman</find>
-      <find>monsagrad</find>
       <find>merrda</find>
-      <find>&lt;_WHILE</find>
       <find>&lt;_ARIT</find>
       <find>FOR</find>
+      <find>new SymbolList</find>
+      <find>&lt;_WHILE</find>
+      <find>FOR(</find>
+      <find>IF(</find>
+      <find>statement</find>
+      <find>&lt;_IF</find>
+      <find>VARIABLE(</find>
+      <find>missing return</find>
+      <find>System.out.println(</find>
+      <find>saindo term</find>
+      <find>VARIABLE(Sym</find>
+      <find>TERM(</find>
+      <find>VARIABLE(SY</find>
+      <find>monsagrada</find>
+      <find>monsagrad</find>
+      <find>&lt;_FOR</find>
+      <find>WRITE</find>
+      <find>VARIABLE(Sy</find>
+      <find>READ_</find>
+      <find>READ_CM</find>
+      <find>terminando var add</find>
+      <find>entrou no blo</find>
+      <find>trabalho fdp</find>
+      <find>funcall</find>
+      <find>nao foi inicializ</find>
+      <find>FUNCALL(</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -256,7 +270,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544507985923" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544517920402" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/input" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Project" />
@@ -337,7 +351,7 @@
       <workItem from="1543956542361" duration="9316000" />
       <workItem from="1544097949526" duration="8447000" />
       <workItem from="1544134770969" duration="4837000" />
-      <workItem from="1544209485120" duration="84551000" />
+      <workItem from="1544209485120" duration="94426000" />
     </task>
     <task id="LOCAL-00001" summary="asdsad">
       <created>1543529435841</created>
@@ -388,11 +402,18 @@
       <option name="project" value="LOCAL" />
       <updated>1544496215951</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="semantica quase pronta">
+      <created>1544507997248</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1544507997248</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="143747000" />
+    <option name="totallyTimeSpent" value="153622000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="-4" width="1366" height="772" extended-state="6" />
@@ -408,7 +429,7 @@
       <window_info anchor="bottom" id="Duplicate detector" weight="0.32917318" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32993197" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3447738" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32605305" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39937598" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -430,7 +451,7 @@
       <window_info anchor="right" id="Database" order="8" weight="0.32954547" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2931818" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2931818" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -440,7 +461,7 @@
       <window_info anchor="bottom" id="Duplicate detector" order="0" weight="0.32917318" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.32993197" />
-      <window_info anchor="bottom" id="Run" order="3" visible="true" weight="0.35881436" />
+      <window_info anchor="bottom" id="Run" order="3" weight="0.3447738" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.39937598" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -450,7 +471,7 @@
       <window_info anchor="bottom" id="Database Changes" order="10" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="13" weight="0.32761312" />
+      <window_info active="true" anchor="bottom" id="Messages" order="13" visible="true" weight="0.32761312" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -471,6 +492,18 @@
     <MESSAGE value="symbol list design started" />
     <MESSAGE value="semantica quase pronta" />
     <option name="LAST_COMMIT_MESSAGE" value="semantica quase pronta" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/GraceCompiler.java</url>
+          <line>829</line>
+          <properties />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -510,13 +543,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/semantic/Type.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/semantic/commands/Command.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -531,9 +557,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/semantic/SubProgram.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/semantic/Type.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="22" lean-forward="true" selection-start-column="22" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/semantic/General.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
+        <state relative-caret-position="227">
           <caret line="26" column="35" lean-forward="true" selection-start-line="26" selection-start-column="35" selection-end-line="26" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -548,26 +591,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/semantic/SubProgram.java">
+    <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+        <state relative-caret-position="155">
+          <caret line="537" column="22" selection-start-line="537" selection-start-column="22" selection-end-line="537" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#58316#58317#0" expanded="true" />
+            <element signature="e#58352#58353#0" expanded="true" />
+            <element signature="e#58393#58394#0" expanded="true" />
+            <element signature="e#58429#58430#0" expanded="true" />
+            <element signature="e#58660#58661#0" expanded="true" />
+            <element signature="e#58689#58690#0" expanded="true" />
+            <element signature="e#59657#59658#0" expanded="true" />
+            <element signature="e#59688#59689#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/semantic/SymbolList.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="23" column="18" lean-forward="true" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
+        <state relative-caret-position="190">
+          <caret line="20" column="34" lean-forward="true" selection-start-line="20" selection-start-column="34" selection-end-line="20" selection-end-column="34" />
           <folding>
+            <element signature="e#1026#1027#0" expanded="true" />
             <element signature="e#1064#1065#0" expanded="true" />
+            <element signature="e#1120#1121#0" expanded="true" />
             <element signature="e#1164#1165#0" expanded="true" />
+            <element signature="e#1201#1202#0" expanded="true" />
             <element signature="e#1236#1237#0" expanded="true" />
+            <element signature="e#1285#1286#0" expanded="true" />
             <element signature="e#1323#1324#0" expanded="true" />
+            <element signature="e#1374#1375#0" expanded="true" />
             <element signature="e#1411#1412#0" expanded="true" />
+            <element signature="e#1481#1482#0" expanded="true" />
             <element signature="e#1533#1534#0" expanded="true" />
           </folding>
         </state>
@@ -575,34 +632,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/semantic/Var.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
+        <state relative-caret-position="198">
           <caret line="24" column="18" lean-forward="true" selection-start-line="24" selection-start-column="18" selection-end-line="24" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-          <folding>
-            <element signature="e#379#391#0" expanded="true" />
-            <element signature="e#1149#1161#0" expanded="true" />
-            <element signature="e#52194#52195#0" expanded="true" />
-            <element signature="e#52230#52231#0" expanded="true" />
-            <element signature="e#52271#52272#0" expanded="true" />
-            <element signature="e#52307#52308#0" expanded="true" />
-            <element signature="e#52538#52539#0" expanded="true" />
-            <element signature="e#52567#52568#0" expanded="true" />
-            <element signature="e#53535#53536#0" expanded="true" />
-            <element signature="e#53566#53567#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/GraceCompiler.jj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="723" column="291" selection-start-line="723" selection-start-column="291" selection-end-line="723" selection-end-column="291" />
+        <state relative-caret-position="1714">
+          <caret line="576" column="4" selection-start-line="576" selection-start-column="4" selection-end-line="576" selection-end-column="4" />
         </state>
       </provider>
     </entry>
